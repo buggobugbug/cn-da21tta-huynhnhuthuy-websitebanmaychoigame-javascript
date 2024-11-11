@@ -1,0 +1,61 @@
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+}
+
+.bg-red{
+  background: #e40000;
+}
+
+.headerWrapper .top-strip{
+  padding: 8px 0px;
+
+}
+
+.headerWrapper .top-strip p{
+ color: white;
+ font-size: 12px;
+ font-weight: 500;
+}
+
+.headerWrapper .header {
+  width: 100%;
+  height: auto;
+  padding: 15px 0px;
+}
+
+.logoWrapper img{
+  width: 80%;
+}
+
+.headerWrapper .header .part2 .CountryDrop{
+width: 150px;
+height: 80px;
+min-width: 150px;
+text-align: left;
+justify-content: flex-start;
+color: #000 !important;
+border: 1px solid rgba(0,0,0,0.20) !important;
+border-radius: 7px !important;
+padding: 10px 10px !important;
+}
+
+.headerWrapper .header .part2 .CountryDrop .label{
+  font-size: 12px !important;
+  text-transform: capitalize !important;
+  color : black !important;
+  line-height: 16px ;
+}
+
+.headerWrapper .header .part2 .CountryDrop .name {
+  font-size: 14px !important;
+  text-transform: capitalize !important;
+  color: black !important;
+  font-weight: 700;
+  line-height: 16px;
+}
