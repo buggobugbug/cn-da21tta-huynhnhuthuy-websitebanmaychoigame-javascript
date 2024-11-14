@@ -1,7 +1,12 @@
 import React from 'react';
+import './Product.css';
 
-const Product = () => {
-  return <h2>Products Page</h2>;
+const ProductPage = () => {
+  return (
+    <div className="product-page">
+      <h2>Welcome to the Products Page!</h2>
+    </div>
+  );
 };
 
-export default Product;
+export default ProductPage;

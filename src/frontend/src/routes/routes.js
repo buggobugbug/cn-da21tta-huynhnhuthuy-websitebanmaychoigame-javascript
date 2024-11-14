@@ -1,5 +1,5 @@
-import Homepage from './pages/Homepage/Homepage';
-import Product from './pages/Product/Product';
+import Homepage from '../pages/Trangchu/Homepage';
+import Product from '../pages/Sanpham/Product';
 
 
 const routes = [
