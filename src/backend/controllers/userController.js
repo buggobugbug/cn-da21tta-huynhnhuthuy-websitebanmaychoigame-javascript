@@ -1,4 +1,6 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
+
 
 exports.getAllUsers = (req, res) => {
     db.query('SELECT * FROM nguoi_dung', (err, results) => {
@@ -33,28 +35,43 @@ exports.getUserById = (req, res) => {
 };
 
 
-exports.updateUser = (req, res) => {
+exports.updateUser = async (req, res) => {
     const { id } = req.params;
-    const { ho_ten, dia_chi, trang_thai } = req.body;
+    const { ho_ten, dia_chi, vai_tro, email, mat_khau } = req.body;
 
-    if (!id || !ho_ten || !dia_chi || trang_thai === undefined) {
-        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin!' });
-    }
+    console.log('Thông tin nhận được:', req.body);
 
-    db.query(
-        'UPDATE nguoi_dung SET ho_ten = ?, dia_chi = ?, trang_thai = ? WHERE id = ?',
-        [ho_ten, dia_chi, trang_thai, id],
-        (err, result) => {
-            if (err) {
-                console.error('Lỗi truy vấn:', err); // Debug lỗi
-                return res.status(500).json({ error: 'Không thể cập nhật người dùng!' });
+    try {
+        // Kiểm tra nếu email đã tồn tại
+        if (email) {
+            console.log('Kiểm tra email:', email);
+            const [existingUser] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ? AND id != ?', [email, id]);
+            console.log('Kết quả kiểm tra email:', existingUser);
+
+            if (existingUser.length > 0) {
+                return res.status(400).json({ error: 'Email đã được sử dụng!' });
             }
-
-            res.json({ message: 'Cập nhật người dùng thành công!' });
         }
-    );
-};
 
+        let hashedPassword;
+        if (mat_khau) {
+            console.log('Mã hóa mật khẩu mới');
+            hashedPassword = await bcrypt.hash(mat_khau, 10);
+        }
+
+        console.log('Cập nhật thông tin người dùng');
+        const [result] = await db.promise().query(
+            'UPDATE nguoi_dung SET ho_ten = ?, dia_chi = ?, vai_tro = ?, email = ?, mat_khau = ? WHERE id = ?',
+            [ho_ten, dia_chi, vai_tro, email || null, hashedPassword || null, id]
+        );
+
+        console.log('Kết quả cập nhật:', result);
+        res.json({ message: 'Cập nhật thông tin người dùng thành công' });
+    } catch (err) {
+        console.error('Lỗi khi cập nhật thông tin người dùng:', err);
+        res.status(500).json({ error: 'Lỗi máy chủ' });
+    }
+};
 exports.deleteUser = (req, res) => {
     const { id } = req.params;
 

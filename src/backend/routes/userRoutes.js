@@ -1,17 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { verifyToken, isAdmin } = require('../midleware/authMiddleware');
 
-// Lấy tất cả người dùng
-router.get('/', userController.getAllUsers);
+// Lấy danh sách người dùng (Admin Only)
+router.get('/', verifyToken, isAdmin, userController.getAllUsers);
 
-// Lấy người dùng theo ID
-router.get('/:id', userController.getUserById);
+router.put('/:id', verifyToken, isAdmin, userController.updateUser);
 
-// Cập nhật người dùng
-router.put('/:id', userController.updateUser);
-
-// Xóa người dùng
-router.delete('/:id', userController.deleteUser);
+// Xóa người dùng (Admin Only)
+router.delete('/:id', verifyToken, isAdmin, userController.deleteUser);
 
 module.exports = router;

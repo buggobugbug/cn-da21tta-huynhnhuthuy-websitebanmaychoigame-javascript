@@ -39,6 +39,7 @@ exports.register = async (req, res) => {
 };
 
 // Đăng nhập người dùng
+// Đăng nhập người dùng
 exports.login = async (req, res) => {
     const { email, mat_khau } = req.body;
 
@@ -47,24 +48,27 @@ exports.login = async (req, res) => {
     }
 
     try {
+        // Kiểm tra xem email có tồn tại không
         const [users] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ?', [email]);
 
         if (users.length === 0) {
-            return res.status(400).json({ error: 'Email không đúng!' });
+            return res.status(400).json({ error: 'Email không tồn tại!' });
         }
 
         const user = users[0];
-        const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
 
+        // Kiểm tra mật khẩu
+        const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
         if (!isMatch) {
             return res.status(400).json({ error: 'Mật khẩu không đúng!' });
         }
 
         // Tạo token JWT
         const token = jwt.sign({ id: user.id, vai_tro: user.vai_tro }, 'secretkey', { expiresIn: '1h' });
+
         res.json({ message: 'Đăng nhập thành công!', token });
     } catch (err) {
-        console.error(err);
+        console.error('Lỗi đăng nhập:', err);
         res.status(500).json({ error: 'Lỗi máy chủ' });
     }
 };

@@ -6,16 +6,13 @@ const { verifyToken, isAdmin } = require('../midleware/authMiddleware');
 // Lấy danh sách tất cả sản phẩm
 router.get('/', productController.getAllProducts);
 
-// Lấy sản phẩm theo ID
-router.get('/:id', productController.getProductById);
-
-// Thêm sản phẩm (Chỉ Admin)
+// Thêm sản phẩm mới (chỉ Admin)
 router.post('/', verifyToken, isAdmin, productController.createProduct);
 
-// Cập nhật sản phẩm (Chỉ Admin)
+// Cập nhật sản phẩm (chỉ Admin)
 router.put('/:id', verifyToken, isAdmin, productController.updateProduct);
 
-// Xóa sản phẩm (Chỉ Admin)
+// Xóa sản phẩm (chỉ Admin)
 router.delete('/:id', verifyToken, isAdmin, productController.deleteProduct);
 
 module.exports = router;

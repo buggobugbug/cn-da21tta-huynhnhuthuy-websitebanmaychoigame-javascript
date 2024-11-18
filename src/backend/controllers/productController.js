@@ -3,25 +3,12 @@ const db = require('../config/db');
 // Lấy danh sách tất cả sản phẩm
 exports.getAllProducts = (req, res) => {
     db.query('SELECT * FROM san_pham', (err, results) => {
-        if (err) {
-            console.error('Lỗi truy vấn:', err);
-            return res.status(500).json({ error: 'Lỗi máy chủ' });
-        }
+        if (err) return res.status(500).json({ error: 'Lỗi máy chủ' });
         res.json(results);
     });
 };
 
-// Lấy chi tiết sản phẩm theo ID
-exports.getProductById = (req, res) => {
-    const { id } = req.params;
-    db.query('SELECT * FROM san_pham WHERE id = ?', [id], (err, results) => {
-        if (err) return res.status(500).json({ error: 'Lỗi máy chủ' });
-        if (results.length === 0) return res.status(404).json({ error: 'Sản phẩm không tồn tại' });
-        res.json(results[0]);
-    });
-};
-
-// Thêm sản phẩm mới (chỉ Admin)
+// Thêm sản phẩm mới
 exports.createProduct = (req, res) => {
     const { ten_san_pham, gia, mo_ta, hinh_anh, so_luong, id_thuong_hieu } = req.body;
 
@@ -51,7 +38,7 @@ exports.updateProduct = (req, res) => {
     );
 };
 
-// Xóa sản phẩm (chỉ Admin)
+// Xóa sản phẩm
 exports.deleteProduct = (req, res) => {
     const { id } = req.params;
     db.query('DELETE FROM san_pham WHERE id = ?', [id], (err, result) => {
