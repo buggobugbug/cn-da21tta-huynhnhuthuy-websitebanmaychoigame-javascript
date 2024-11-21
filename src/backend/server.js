@@ -5,6 +5,7 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const cartRoutes = require('./routes/cartRoutes'); // Thêm dòng này
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes); // Sử dụng route cho giỏ hàng
+app.use('/api/orders', orderRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại http://localhost:${PORT}`);
