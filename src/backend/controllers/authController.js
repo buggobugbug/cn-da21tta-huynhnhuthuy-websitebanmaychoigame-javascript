@@ -48,27 +48,37 @@ exports.login = async (req, res) => {
     }
 
     try {
-        // Kiểm tra xem email có tồn tại không
-        const [users] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ?', [email]);
+        // Kiểm tra người dùng có tồn tại không
+        const [user] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ?', [email]);
 
-        if (users.length === 0) {
+        if (user.length === 0) {
             return res.status(400).json({ error: 'Email không tồn tại!' });
         }
 
-        const user = users[0];
-
-        // Kiểm tra mật khẩu
-        const isMatch = await bcrypt.compare(mat_khau, user.mat_khau);
+        // Kiểm tra mật khẩu có đúng không
+        const isMatch = await bcrypt.compare(mat_khau, user[0].mat_khau);
         if (!isMatch) {
             return res.status(400).json({ error: 'Mật khẩu không đúng!' });
         }
 
         // Tạo token JWT
-        const token = jwt.sign({ id: user.id, vai_tro: user.vai_tro }, 'secretkey', { expiresIn: '1h' });
+        const token = jwt.sign(
+            { id: user[0].id, vai_tro: user[0].vai_tro },
+            'secretkey',
+            { expiresIn: '1h' }
+        );
 
-        res.json({ message: 'Đăng nhập thành công!', token });
+        res.json({
+            message: 'Đăng nhập thành công!',
+            token,
+            user: {
+                id: user[0].id,
+                email: user[0].email,
+                vai_tro: user[0].vai_tro,
+            },
+        });
     } catch (err) {
-        console.error('Lỗi đăng nhập:', err);
+        console.error(err);
         res.status(500).json({ error: 'Lỗi máy chủ' });
     }
 };

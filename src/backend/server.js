@@ -5,20 +5,21 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const cartRoutes = require('./routes/cartRoutes'); // Thêm dòng này
-const orderRoutes = require('./routes/orderRoutes');
-
 const app = express();
 const PORT = 3000;
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3001', // Cấu hình cho frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(bodyParser.json());
-
+app.use('/uploads', express.static('uploads'));
 // Định tuyến cho các API
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes); // Sử dụng route cho giỏ hàng
-app.use('/api/orders', orderRoutes);
 
 
 app.listen(PORT, () => {

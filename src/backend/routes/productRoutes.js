@@ -6,6 +6,8 @@ const { verifyToken, isAdmin } = require('../midleware/authMiddleware');
 // Lấy danh sách tất cả sản phẩm
 router.get('/', productController.getAllProducts);
 
+router.get('/:id', productController.getProductById);
+
 // Thêm sản phẩm mới (chỉ Admin)
 router.post('/', verifyToken, isAdmin, productController.createProduct);
 
