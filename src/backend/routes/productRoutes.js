@@ -1,20 +1,23 @@
-const express = require('express');
+import express from 'express';
+import { verifyToken, isAdmin } from '../middleware/authMiddleware.js';  // Đảm bảo rằng bạn có middleware kiểm tra token và quyền admin
+import {
+    createProduct,
+    getAllProducts,
+    getProductById,
+    updateProduct,
+    deleteProduct
+} from '../controllers/productController.js';
+
 const router = express.Router();
-const productController = require('../controllers/productController');
-const { verifyToken, isAdmin } = require('../midleware/authMiddleware');
 
-// Lấy danh sách tất cả sản phẩm
-router.get('/', productController.getAllProducts);
+// Middleware để kiểm tra quyền Admin
+router.use(verifyToken); // Kiểm tra người dùng đã đăng nhập hay chưa
 
-router.get('/:id', productController.getProductById);
+// Routes cho quản lý sản phẩm
+router.post('/add', verifyToken ,isAdmin, createProduct);   // Thêm sản phẩm (chỉ admin)
+router.get('/', getAllProducts);                  // Lấy tất cả sản phẩm (cho cả admin và user)
+router.get('/:id', getProductById);            // Lấy sản phẩm theo id (cho cả admin và user)
+router.put('/:id', isAdmin, updateProduct);    // Sửa sản phẩm (chỉ admin)
+router.delete('/:id', isAdmin, deleteProduct); // Xóa sản phẩm (chỉ admin)
 
-// Thêm sản phẩm mới (chỉ Admin)
-router.post('/', verifyToken, isAdmin, productController.createProduct);
-
-// Cập nhật sản phẩm (chỉ Admin)
-router.put('/:id', verifyToken, isAdmin, productController.updateProduct);
-
-// Xóa sản phẩm (chỉ Admin)
-router.delete('/:id', verifyToken, isAdmin, productController.deleteProduct);
-
-module.exports = router;
+export default router;

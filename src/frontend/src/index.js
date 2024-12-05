@@ -1,10 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Import ReactDOM from 'react-dom/client'
-import App from './App'; // Import ứng dụng của bạn
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom'; // Bao bọc toàn bộ ứng dụng với BrowserRouter
+import App from './App';
+import './index.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Tạo root
+const container = document.getElementById('root');
+const root = createRoot(container);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter> {/* Bao bọc App bằng BrowserRouter */}
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

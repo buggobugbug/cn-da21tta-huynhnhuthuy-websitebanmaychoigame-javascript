@@ -1,84 +1,68 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../config/db');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import pool from '../config/db.js';
 
-// Đăng ký người dùng mới
-exports.register = async (req, res) => {
-    const { mat_khau, email, vai_tro, ho_ten, dia_chi } = req.body;
 
-    if (!mat_khau || !email || !vai_tro || !ho_ten || !dia_chi) {
-        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin!' });
-    }
+export const register = async (req, res) => {
+    const { ten_dang_nhap, mat_khau, so_dien_thoai, dia_chi, ma_vai_tro } = req.body;
+
+    // Nếu không có vai trò trong yêu cầu, mặc định sẽ là 2 (người dùng bình thường)
+    const role = ma_vai_tro || 2;
 
     try {
-        // Kiểm tra nếu email đã tồn tại
-        const [existingUser] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ?', [email]);
+        // Kiểm tra tên đăng nhập đã tồn tại chưa
+        const [existingUser] = await pool.execute('SELECT * FROM NguoiDung WHERE ten_dang_nhap = ?', [ten_dang_nhap]);
         if (existingUser.length > 0) {
-            return res.status(400).json({ error: 'Email đã tồn tại!' });
+            return res.status(400).json({ message: 'Tên đăng nhập đã tồn tại!' });
         }
 
         // Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(mat_khau, 10);
 
-        // Chèn người dùng mới
-        const newUser = {
-            mat_khau: hashedPassword,
-            email,
-            vai_tro,
-            ho_ten,
-            dia_chi,
-            trang_thai: true
-        };
+        // Lưu người dùng mới vào cơ sở dữ liệu
+        await pool.execute(
+            'INSERT INTO NguoiDung (ten_dang_nhap , mat_khau, so_dien_thoai, dia_chi, ma_vai_tro) VALUES (?, ?, ?, ?, ?)',
+            [ten_dang_nhap, hashedPassword, so_dien_thoai, dia_chi, role]
+        );
 
-        const [result] = await db.promise().query('INSERT INTO nguoi_dung SET ?', newUser);
-        res.status(201).json({ message: 'Đăng ký thành công!', userId: result.insertId });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Lỗi máy chủ' });
+        res.status(201).json({ message: 'Đăng ký thành công!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
-// Đăng nhập người dùng
-// Đăng nhập người dùng
-exports.login = async (req, res) => {
-    const { email, mat_khau } = req.body;
 
-    if (!email || !mat_khau) {
-        return res.status(400).json({ error: 'Vui lòng cung cấp đầy đủ thông tin!' });
-    }
+
+export const login = async (req, res) => {
+    const { ten_dang_nhap, mat_khau } = req.body;
 
     try {
-        // Kiểm tra người dùng có tồn tại không
-        const [user] = await db.promise().query('SELECT * FROM nguoi_dung WHERE email = ?', [email]);
 
+        const [user] = await pool.execute('SELECT * FROM NguoiDung WHERE ten_dang_nhap = ?', [ten_dang_nhap]);
         if (user.length === 0) {
-            return res.status(400).json({ error: 'Email không tồn tại!' });
+            return res.status(404).json({ message: 'Tài khoản không tồn tại!' });
         }
 
-        // Kiểm tra mật khẩu có đúng không
+
         const isMatch = await bcrypt.compare(mat_khau, user[0].mat_khau);
         if (!isMatch) {
-            return res.status(400).json({ error: 'Mật khẩu không đúng!' });
+            return res.status(401).json({ message: 'Mật khẩu không đúng!' });
         }
 
-        // Tạo token JWT
+
         const token = jwt.sign(
-            { id: user[0].id, vai_tro: user[0].vai_tro },
-            'secretkey',
+            { id: user[0].ma_nguoi_dung, ten_dang_nhap: user[0].ten_dang_nhap, ma_vai_tro: user[0].ma_vai_tro },
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
-        res.json({
+
+
+        res.status(200).json({
             message: 'Đăng nhập thành công!',
             token,
-            user: {
-                id: user[0].id,
-                email: user[0].email,
-                vai_tro: user[0].vai_tro,
-            },
         });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Lỗi máy chủ' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
