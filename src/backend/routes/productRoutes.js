@@ -16,8 +16,8 @@ router.use(verifyToken); // Kiểm tra người dùng đã đăng nhập hay ch�
 // Routes cho quản lý sản phẩm
 router.post('/add', verifyToken ,isAdmin, createProduct);   // Thêm sản phẩm (chỉ admin)
 router.get('/', getAllProducts);                  // Lấy tất cả sản phẩm (cho cả admin và user)
-router.get('/:id', getProductById);            // Lấy sản phẩm theo id (cho cả admin và user)
-router.put('/:id', isAdmin, updateProduct);    // Sửa sản phẩm (chỉ admin)
-router.delete('/:id', isAdmin, deleteProduct); // Xóa sản phẩm (chỉ admin)
+router.get('/:ma_san_pham', getProductById);            // Lấy sản phẩm theo id (cho cả admin và user)
+router.put('/:ma_san_pham', isAdmin, updateProduct);    // Sửa sản phẩm (chỉ admin)
+router.delete('/:ma_san_pham', isAdmin, deleteProduct); // Xóa sản phẩm (chỉ admin)
 
 export default router;

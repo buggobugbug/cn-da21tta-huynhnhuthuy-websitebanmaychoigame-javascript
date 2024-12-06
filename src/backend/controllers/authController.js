@@ -32,23 +32,19 @@ export const register = async (req, res) => {
 };
 
 
-
 export const login = async (req, res) => {
     const { ten_dang_nhap, mat_khau } = req.body;
 
     try {
-
         const [user] = await pool.execute('SELECT * FROM NguoiDung WHERE ten_dang_nhap = ?', [ten_dang_nhap]);
         if (user.length === 0) {
             return res.status(404).json({ message: 'Tài khoản không tồn tại!' });
         }
 
-
         const isMatch = await bcrypt.compare(mat_khau, user[0].mat_khau);
         if (!isMatch) {
             return res.status(401).json({ message: 'Mật khẩu không đúng!' });
         }
-
 
         const token = jwt.sign(
             { id: user[0].ma_nguoi_dung, ten_dang_nhap: user[0].ten_dang_nhap, ma_vai_tro: user[0].ma_vai_tro },
@@ -56,13 +52,19 @@ export const login = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-
-
         res.status(200).json({
             message: 'Đăng nhập thành công!',
             token,
+            user: {
+                ma_nguoi_dung: user[0].ma_nguoi_dung,
+                ten_dang_nhap: user[0].ten_dang_nhap,
+                ma_vai_tro: user[0].ma_vai_tro,
+                so_dien_thoai: user[0].so_dien_thoai,
+                dia_chi: user[0].dia_chi
+            }
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
 
 
+
 // Middleware xác thực token
 export const verifyToken = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1]; // Lấy token từ header

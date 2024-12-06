@@ -11,7 +11,10 @@ dotenv.config();
 
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',  // Địa chỉ của frontend
+    credentials: true  // Cho phép gửi cookie
+}));
 app.use(express.json());
 
 // Routes

@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import User from '../Images/User.png';
+import Cookies from 'js-cookie';
+
 
 function Login() {
     const [tenDangNhap, setTenDangNhap] = useState(""); // Tên đăng nhập
@@ -21,7 +23,21 @@ function Login() {
             if (response.data.message === "Đăng nhập thành công!" && response.data.token) {
                 toast.success(response.data.message);
                 console.log('Login successful:', response.data); // Log thông tin thành công
-                navigate("/home"); // Chuyển hướng đến trang dashboard
+                
+                Cookies.set("accessToken", response.data.token, { expires: 7 });
+
+                const { ma_vai_tro } = response.data.user; // Lấy ma_vai_tro từ user trả về
+
+                console.log(response.data);
+
+
+                if (ma_vai_tro === 1) {
+                    navigate("/dashboard"); // Chuyển hướng đến dashboard cho Admin
+                } else if (ma_vai_tro === 2) {
+                    navigate("/home"); // Chuyển hướng đến home cho User thường
+                } else {
+                    toast.error("Không xác định quyền người dùng");
+                }
             } else {
                 toast.error("Login failed");
                 console.log('Login failed:', response.data); // Log thông tin lỗi

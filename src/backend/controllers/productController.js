@@ -1,4 +1,4 @@
-import db from '../config/db.js';
+import pool from '../config/db.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -6,7 +6,7 @@ import fs from 'fs';
 // Cấu hình lưu trữ hình ảnh với multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = './uploads/products/';
+        const uploadDir = './uploads/';
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -24,35 +24,42 @@ const upload = multer({ storage: storage });
 // API Lấy tất cả sản phẩm
 export const getAllProducts = async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM SanPham');
-        res.json(result);
+        const [rows] = await pool.query('SELECT * FROM SanPham');
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Không có sản phẩm nào' });
+        }
+        res.json(rows);
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi lấy danh sách sản phẩm', error });
+        console.error('Lỗi getAllProducts:', error); // In toàn bộ lỗi
+        res.status(500).json({ message: 'Lỗi khi lấy danh sách sản phẩm', error: error.message });
     }
 };
+
+
 
 // API Lấy sản phẩm theo ID
 export const getProductById = async (req, res) => {
     const { ma_san_pham } = req.params;
 
     try {
-        const result = await db.query('SELECT * FROM SanPham WHERE ma_san_pham = ?', [ma_san_pham]);
-        if (result.length > 0) {
-            res.json(result[0]); // Trả về sản phẩm đầu tiên nếu tìm thấy
+        const [rows] = await pool.query('SELECT * FROM SanPham WHERE ma_san_pham = ?', [ma_san_pham]);
+        if (rows.length > 0) {
+            return res.json(rows[0]); // Trả về sản phẩm đầu tiên nếu tìm thấy
         } else {
-            res.status(404).json({ message: 'Sản phẩm không tồn tại' });
+            return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi lấy sản phẩm', error });
+        console.error('Lỗi getProductById:', error);
+        res.status(500).json({ message: 'Lỗi khi lấy sản phẩm', error: error.message });
     }
 };
 
 
-// API Thêm sản phẩm
+
 export const createProduct = [
     upload.single('hinh_anh'), // Xử lý tải lên hình ảnh
     async (req, res) => {
-        // Kiểm tra quyền Admin (verifyToken đã được gọi ở đâu đó trước đó)
+        // Kiểm tra quyền Admin
         if (!req.user || req.user.ma_vai_tro !== 1) {
             return res.status(403).json({ message: 'Không có quyền truy cập' });
         }
@@ -60,17 +67,22 @@ export const createProduct = [
         const { ten_san_pham, mo_ta, gia, ma_danh_muc } = req.body;
         const hinh_anh = req.file ? `/uploads/${req.file.filename}` : null;
 
+        console.log("Received product data:", { ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh });
+
         try {
-            const result = await db.query(
+            const result = await pool.query(
                 `INSERT INTO SanPham (ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh) VALUES (?, ?, ?, ?, ?)`,
                 [ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh]
             );
+            console.log("Product inserted:", result);
             res.status(201).json({ message: 'Sản phẩm đã được thêm thành công!' });
         } catch (error) {
+            console.error("Error inserting product:", error); // Log chi tiết lỗi
             res.status(500).json({ message: 'Lỗi khi thêm sản phẩm', error });
         }
     }
 ];
+
 
 // API Sửa sản phẩm
 export const updateProduct = async (req, res) => {
@@ -88,19 +100,25 @@ export const updateProduct = async (req, res) => {
     }
 
     try {
-        const result = await db.query(
+        // Chú ý cách lấy ma_san_pham từ req.params nếu truyền qua URL
+        const { ma_san_pham } = req.params; // Lấy ma_san_pham từ URL
+
+        const [result] = await pool.query(
             `UPDATE SanPham SET ten_san_pham = ?, mo_ta = ?, gia = ?, ma_danh_muc = ?, hinh_anh = ? WHERE ma_san_pham = ?`,
             [ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh, ma_san_pham]
         );
+
         if (result.affectedRows > 0) {
             res.json({ message: 'Sản phẩm đã được cập nhật thành công!' });
         } else {
             res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi cập nhật sản phẩm', error });
+        console.error('Lỗi updateProduct:', error); // In lỗi chi tiết
+        res.status(500).json({ message: 'Lỗi khi cập nhật sản phẩm', error: error.message });
     }
 };
+
 
 // API Xóa sản phẩm
 export const deleteProduct = async (req, res) => {
@@ -112,7 +130,7 @@ export const deleteProduct = async (req, res) => {
     const { ma_san_pham } = req.params;
 
     try {
-        const result = await db.query(
+        const [result] = await pool.query(
             `DELETE FROM SanPham WHERE ma_san_pham = ?`,
             [ma_san_pham]
         );
@@ -122,6 +140,8 @@ export const deleteProduct = async (req, res) => {
             res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi xóa sản phẩm', error });
+        console.error('Lỗi deleteProduct:', error); // In lỗi chi tiết
+        res.status(500).json({ message: 'Lỗi khi xóa sản phẩm', error: error.message });
     }
 };
+
