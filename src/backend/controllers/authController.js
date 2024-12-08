@@ -53,15 +53,16 @@ export const login = async (req, res) => {
         );
 
         res.status(200).json({
+            success: true,
             message: 'Đăng nhập thành công!',
-            token,
             user: {
                 ma_nguoi_dung: user[0].ma_nguoi_dung,
                 ten_dang_nhap: user[0].ten_dang_nhap,
                 ma_vai_tro: user[0].ma_vai_tro,
                 so_dien_thoai: user[0].so_dien_thoai,
                 dia_chi: user[0].dia_chi
-            }
+            },
+            token
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -13,7 +13,7 @@ const Products = () => {
         const fetchProducts = async () => {
             try {
                 // Lấy token từ cookie
-                const token = Cookies.get('token');
+                const token = Cookies.get('accessToken');
 
                 const response = await axios.get('http://localhost:5000/api/products', {
                     withCredentials: true,  // Đảm bảo gửi cookie
@@ -37,7 +37,7 @@ const Products = () => {
     const handleDelete = async (ma_san_pham) => {
         try {
             // Lấy token từ cookie
-            const token = Cookies.get('token');
+            const token = Cookies.get('accessToken');
 
             await axios.delete(`http://localhost:5000/api/products/${ma_san_pham}`, {
                 withCredentials: true, // Gửi cookie khi xóa sản phẩm
@@ -74,10 +74,10 @@ const Products = () => {
                             <td>{product.ma_san_pham}</td>
                             <td>{product.ten_san_pham}</td>
                             <td>{product.gia}</td>
-                            <td>{product.ten_danh_muc}</td>
+                            <td>{product.ma_danh_muc}</td>
                             <td>
                                 <img
-                                    src={product.hinh_anh}
+                                    src={`http://localhost:5000${product.hinh_anh}`}
                                     alt={product.ten_san_pham}
                                     style={{ width: '50px', height: '50px', objectFit: 'cover' }}
                                 />

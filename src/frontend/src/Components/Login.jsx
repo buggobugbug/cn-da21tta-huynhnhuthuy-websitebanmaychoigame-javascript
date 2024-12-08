@@ -26,6 +26,8 @@ function Login() {
                 
                 Cookies.set("accessToken", response.data.token, { expires: 7 });
 
+                axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("accessToken")}`
+
                 const { ma_vai_tro } = response.data.user; // Lấy ma_vai_tro từ user trả về
 
                 console.log(response.data);
