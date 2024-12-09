@@ -10,6 +10,7 @@ const AddProduct = () => {
         mo_ta: '',
         gia: '',
         ma_danh_muc: '',
+        so_luong: '', // Thêm trường so_luong
         hinh_anh: null // Đổi hinh_anh thành null (sẽ chứa file)
     });
     const [error, setError] = useState('');
@@ -35,7 +36,7 @@ const AddProduct = () => {
         e.preventDefault();
 
         // Kiểm tra dữ liệu đầu vào
-        if (!product.ten_san_pham || !product.gia || !product.ma_danh_muc || !product.hinh_anh) {
+        if (!product.ten_san_pham || !product.gia || !product.ma_danh_muc || !product.so_luong || !product.hinh_anh) {
             setError('Vui lòng điền đầy đủ thông tin');
             return;
         }
@@ -46,6 +47,7 @@ const AddProduct = () => {
         formData.append('mo_ta', product.mo_ta);
         formData.append('gia', product.gia);
         formData.append('ma_danh_muc', product.ma_danh_muc);
+        formData.append('so_luong', product.so_luong); // Thêm so_luong vào formData
         formData.append('hinh_anh', product.hinh_anh);
 
         const token = Cookies.get('accessToken'); // Lấy token từ cookie
@@ -59,7 +61,7 @@ const AddProduct = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/products/add', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',// Đặt header cho việc upload file
+                    'Content-Type': 'multipart/form-data', // Đặt header cho việc upload file
                     'Authorization': `Bearer ${token}`  // Sử dụng token từ cookie
                 }
             });
@@ -115,6 +117,18 @@ const AddProduct = () => {
                         type="number"
                         name="ma_danh_muc"
                         value={product.ma_danh_muc}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                {/* Nhập số lượng */}
+                <div className="form-group">
+                    <label>Số lượng</label>
+                    <input
+                        type="number"
+                        name="so_luong"
+                        value={product.so_luong}
                         onChange={handleChange}
                         required
                     />

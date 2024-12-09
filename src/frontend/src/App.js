@@ -4,6 +4,7 @@ import Login from './Components/Login';
 import Dashboard from './Components/admin/Dashboard';
 import Products from './Components/admin/Products';
 import AddProduct from './Components/admin/Addproducts';
+import Home from './Components/Home';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,6 +12,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/home" element={<Home />} /> {/* Trang Home */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         

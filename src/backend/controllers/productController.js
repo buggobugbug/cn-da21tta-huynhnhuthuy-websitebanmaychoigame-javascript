@@ -64,48 +64,42 @@ export const createProduct = [
             return res.status(403).json({ message: 'Không có quyền truy cập' });
         }
 
-        const { ten_san_pham, mo_ta, gia, ma_danh_muc } = req.body;
+        const { ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong } = req.body; // Thêm so_luong vào request body
         const hinh_anh = req.file ? `/uploads/${req.file.filename}` : null;
-
-        console.log("Received product data:", { ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh });
 
         try {
             const result = await pool.query(
-                `INSERT INTO SanPham (ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh) VALUES (?, ?, ?, ?, ?)`,
-                [ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh]
+                `INSERT INTO SanPham (ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong, hinh_anh) VALUES (?, ?, ?, ?, ?, ?)`,
+                [ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong, hinh_anh]
             );
-            console.log("Product inserted:", result);
             res.status(201).json({ message: 'Sản phẩm đã được thêm thành công!' });
         } catch (error) {
-            console.error("Error inserting product:", error); // Log chi tiết lỗi
+            console.error("Error inserting product:", error);
             res.status(500).json({ message: 'Lỗi khi thêm sản phẩm', error });
         }
     }
 ];
 
 
+
 // API Sửa sản phẩm
 export const updateProduct = async (req, res) => {
-    // Kiểm tra quyền Admin
     if (!req.user || req.user.ma_vai_tro !== 1) {
         return res.status(403).json({ message: 'Không có quyền truy cập' });
     }
 
-    const { ma_san_pham, ten_san_pham, mo_ta, gia, ma_danh_muc } = req.body;
+    const { ma_san_pham } = req.params;
+    const { ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong } = req.body;
     let hinh_anh = req.body.hinh_anh;
 
-    // Nếu có tệp hình ảnh mới, xử lý việc tải lên
     if (req.file) {
         hinh_anh = `/uploads/${req.file.filename}`;
     }
 
     try {
-        // Chú ý cách lấy ma_san_pham từ req.params nếu truyền qua URL
-        const { ma_san_pham } = req.params; // Lấy ma_san_pham từ URL
-
         const [result] = await pool.query(
-            `UPDATE SanPham SET ten_san_pham = ?, mo_ta = ?, gia = ?, ma_danh_muc = ?, hinh_anh = ? WHERE ma_san_pham = ?`,
-            [ten_san_pham, mo_ta, gia, ma_danh_muc, hinh_anh, ma_san_pham]
+            `UPDATE SanPham SET ten_san_pham = ?, mo_ta = ?, gia = ?, ma_danh_muc = ?, so_luong = ?, hinh_anh = ? WHERE ma_san_pham = ?`,
+            [ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong, hinh_anh, ma_san_pham]
         );
 
         if (result.affectedRows > 0) {
@@ -114,7 +108,7 @@ export const updateProduct = async (req, res) => {
             res.status(404).json({ message: 'Không tìm thấy sản phẩm' });
         }
     } catch (error) {
-        console.error('Lỗi updateProduct:', error); // In lỗi chi tiết
+        console.error('Lỗi updateProduct:', error);
         res.status(500).json({ message: 'Lỗi khi cập nhật sản phẩm', error: error.message });
     }
 };

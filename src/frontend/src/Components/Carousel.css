@@ -1,0 +1,70 @@
+/* Carousel.css */
+.carousel {
+    position: relative;
+    overflow: hidden;
+    width: 95%;
+    /* Tăng chiều rộng chiếm 90% màn hình */
+    max-width: 1400px;
+    /* Giới hạn chiều rộng tối đa */
+    height: 500px;
+    /* Tăng chiều cao cho phù hợp với màn hình lớn */
+    margin: 20px auto;
+    tranform: translateX(5%);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-items {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    min-width: 100%;
+    height: 100%;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* Nút điều hướng */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    width: 45px;
+    height: 45px;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-button:hover {
+    background-color: #f35212;
+    color: white;
+}
+
+.carousel-button.prev {
+    left: 20px;
+}
+
+.carousel-button.next {
+    right: 20px;
+}

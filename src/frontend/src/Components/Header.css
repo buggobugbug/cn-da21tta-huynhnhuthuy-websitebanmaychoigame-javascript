@@ -1,0 +1,89 @@
+/* Header.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    /* Căn chỉnh cho màn hình lớn */
+    background-color: #fff;
+    border-bottom: 2px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.header-logo {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    /* Tăng kích thước logo */
+    font-weight: bold;
+    color: #333;
+}
+
+/* Menu */
+.header-menu {
+    display: flex;
+    gap: 30px;
+    /* Tăng khoảng cách giữa các mục menu */
+}
+
+.header-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.header-menu-item:hover {
+    color: #f35212;
+    transform: translateY(-5px);
+}
+
+.header-icon {
+    font-size: 32px;
+}
+
+.header-menu-label {
+    font-size: 16px;
+}
+
+/* Phần bên phải */
+.header-right {
+    display: flex;
+    gap: 25px;
+}
+
+/* Thanh tìm kiếm */
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: #f9f9f9;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 300px;
+    /* Tăng chiều rộng thanh tìm kiếm */
+    background-color: transparent;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.header-action-icon {
+    font-size: 32px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.header-action-icon:hover {
+    color: #f35212;
+}

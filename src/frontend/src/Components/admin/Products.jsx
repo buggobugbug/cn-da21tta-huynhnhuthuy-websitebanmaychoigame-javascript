@@ -63,6 +63,7 @@ const Products = () => {
                         <th>Tên sản phẩm</th>
                         <th>Giá</th>
                         <th>Danh mục</th>
+                        <th>Số lượng</th> {/* Thêm cột Số lượng */}
                         <th>Hình ảnh</th>
                         <th>Chỉnh sửa</th>
                         <th>Xóa</th>
@@ -75,6 +76,7 @@ const Products = () => {
                             <td>{product.ten_san_pham}</td>
                             <td>{product.gia}</td>
                             <td>{product.ma_danh_muc}</td>
+                            <td>{product.so_luong}</td> {/* Hiển thị số lượng */}
                             <td>
                                 <img
                                     src={`http://localhost:5000${product.hinh_anh}`}
