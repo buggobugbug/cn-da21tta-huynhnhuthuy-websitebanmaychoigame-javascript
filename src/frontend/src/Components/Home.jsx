@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import Header from './Header';
 import Carousel from './Carousel';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
 import './Home.css';
 
 const Home = () => {
@@ -43,8 +41,6 @@ const Home = () => {
 
     return (
         <div className="home">
-            {/* Header */}
-            <Header />
 
             <div className="home-container">
                 {/* Sidebar */}
@@ -62,7 +58,11 @@ const Home = () => {
                         ) : (
                                 <div className="product-list">
                                     {products.map((product) => (
-                                        <div key={product.ma_san_pham} className="product-card">
+                                        <div
+                                            key={product.ma_san_pham}
+                                            className="product-card"
+                                            onClick={() => (window.location.href = `/home/chitietsanpham/${product.ma_san_pham}`)}
+                                        >
                                             <img
                                                 src={`http://localhost:5000${product.hinh_anh}`}
                                                 alt={product.ten_san_pham}
@@ -70,8 +70,11 @@ const Home = () => {
                                             />
                                             <div className="product-info">
                                                 <h3 className="product-title">{product.ten_san_pham}</h3>
-                                                <p className="product-price">{product.gia.toLocaleString()} ₫</p>
+                                                <p className="product-price">
+                                                    {Math.trunc(product.gia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })}
+                                                </p>
                                             </div>
+                                            <button className="add-to-cart-btn">Thêm vào giỏ</button>
                                         </div>
                                     ))}
                                 </div>
@@ -79,9 +82,6 @@ const Home = () => {
                     </section>
                 </main>
             </div>
-
-            {/* Footer */}
-            <Footer />
         </div>
     );
 };

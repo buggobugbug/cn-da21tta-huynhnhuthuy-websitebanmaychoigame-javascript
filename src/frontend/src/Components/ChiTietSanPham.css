@@ -1,0 +1,122 @@
+/* Tổng thể trang chi tiết sản phẩm */
+.product-detail {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-detail-container {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hình ảnh sản phẩm */
+.product-image img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    object-fit: contain;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+/* Thông tin sản phẩm */
+.product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-description-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-description {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #f35212;
+    margin-bottom: 20px;
+}
+
+.product-category,
+.product-stock {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Đoạn văn bản chính sách bảo hành */
+.product-policy {
+    font-size: 14px;
+    color: #444;
+    background: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Nút hành động */
+.add-to-cart-btn,
+.buy-now-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #f35212;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    margin-right: 10px;
+}
+
+/* Nút Thêm vào giỏ */
+.add-to-cart-btn {
+    background-color: #fff;
+    color: #f35212;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #f35212;
+    color: #fff;
+}
+
+/* Nút Mua ngay */
+.buy-now-btn {
+    background-color: #f35212;
+    color: #fff;
+    border: none;
+}
+
+.buy-now-btn:hover {
+    background-color: #e03a0e;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+}

@@ -2,7 +2,8 @@
 .home {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 99vh;
+    width: 90%;
     overflow-x: hidden;
     /* Loại bỏ thanh cuộn ngang tổng thể */
 }

@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Cấu trúc chính của ứng dụng */
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* Đảm bảo chiếm 100% chiều cao màn hình */
+    display: flex;
+    flex-direction: column;
+    /* Cấu trúc dọc */
+}
+
+/* Phần chứa ứng dụng */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    /* Chiều cao tối thiểu của toàn bộ ứng dụng */
+}
+
+/* Nội dung chính */
+.main-content {
+    flex: 1;
+    /* Đẩy nội dung chính chiếm toàn bộ không gian trống */
+    padding: 20px;
+    /* Thêm khoảng cách nếu cần */
+    background-color: #f5f5f5;
+    /* Màu nền tùy chọn */
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    /* Màu nền footer */
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+}

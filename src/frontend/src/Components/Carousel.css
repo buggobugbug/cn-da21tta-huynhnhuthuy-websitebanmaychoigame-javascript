@@ -9,7 +9,6 @@
     height: 500px;
     /* Tăng chiều cao cho phù hợp với màn hình lớn */
     margin: 20px auto;
-    tranform: translateX(5%);
     border-radius: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
