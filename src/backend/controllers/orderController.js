@@ -2,37 +2,39 @@ import pool from '../config/db.js';
 
 // Tạo đơn hàng
 export const createOrder = async (req, res) => {
-    const { dia_chi_giao_hang, payment_method, product_id, product_price, so_luong } = req.body;
+    const { dia_chi_giao_hang, payment_method, cart_items, tong_tien } = req.body;
     const userId = req.user.id;
 
     try {
         await pool.query('START TRANSACTION');
 
-        const tong_tien = product_price * so_luong;
-
         // Thêm vào bảng DonHang
         const [orderResult] = await pool.query(
-            `INSERT INTO DonHang (ma_nguoi_dung, dia_chi_giao_hang, tong_tien, trang_thai) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO DonHang (ma_nguoi_dung, dia_chi_giao_hang, tong_tien, trang_thai, ngay_tao, ngay_cap_nhat) 
+            VALUES (?, ?, ?, ?, NOW(), NOW())`,
             [userId, dia_chi_giao_hang, tong_tien, 'Pending']
         );
         const orderId = orderResult.insertId;
 
-        // Thêm vào bảng GioHang (nếu cần)
+        // Thêm vào bảng GioHang
         const [cartResult] = await pool.query(
-            `INSERT INTO GioHang (ma_don_hang) VALUES (?)`,
+            `INSERT INTO GioHang (ma_don_hang, ngay_tao, ngay_cap_nhat) VALUES (?, NOW(), NOW())`,
             [orderId]
         );
         const cartId = cartResult.insertId;
 
-        // Thêm vào bảng SanPhamGioHang
-        await pool.query(
-            `INSERT INTO SanPhamGioHang (ma_gio_hang, ma_san_pham, so_luong) VALUES (?, ?, ?)`,
-            [cartId, product_id, so_luong]
-        );
+        // Thêm từng sản phẩm vào bảng SanPhamGioHang
+        for (const item of cart_items) {
+            await pool.query(
+                `INSERT INTO SanPhamGioHang (ma_gio_hang, ma_san_pham, so_luong) VALUES (?, ?, ?)`,
+                [cartId, item.ma_san_pham, item.so_luong]
+            );
+        }
 
         // Thêm vào bảng ThanhToan
         await pool.query(
-            `INSERT INTO ThanhToan (ma_don_hang, ma_nguoi_dung, so_tien, trang_thai_thanh_toan) VALUES (?, ?, ?, ?)`,
+            `INSERT INTO ThanhToan (ma_don_hang, ma_nguoi_dung, so_tien, trang_thai_thanh_toan, ngay_tao) 
+            VALUES (?, ?, ?, ?, NOW())`,
             [orderId, userId, tong_tien, payment_method === 'COD' ? 'Pending' : 'Processing']
         );
 
@@ -45,6 +47,8 @@ export const createOrder = async (req, res) => {
         res.status(500).json({ message: 'Có lỗi xảy ra khi đặt hàng.', error: error.message });
     }
 };
+
+
 // Lấy thông tin chi tiết đơn hàng
 export const getOrderDetails = async (req, res) => {
     const { orderId } = req.params;
@@ -63,12 +67,14 @@ export const getOrderDetails = async (req, res) => {
 
         // Lấy thông tin sản phẩm trong đơn hàng
         const [products] = await pool.query(
-            `SELECT sp.ten_san_pham, sp.gia, spgh.so_luong 
-             FROM SanPham sp
-             INNER JOIN SanPhamGioHang spgh ON sp.ma_san_pham = spgh.ma_san_pham
-             WHERE spgh.ma_gio_hang = ?`,
+            `SELECT sp.ten_san_pham, sp.gia, sp.hinh_anh, spgh.so_luong 
+     FROM SanPham sp
+     INNER JOIN SanPhamGioHang spgh ON sp.ma_san_pham = spgh.ma_san_pham
+     INNER JOIN GioHang gh ON gh.ma_gio_hang = spgh.ma_gio_hang
+     WHERE gh.ma_don_hang = ?`,
             [orderId]
         );
+
 
         res.status(200).json({
             order: orderDetails[0],
@@ -79,6 +85,32 @@ export const getOrderDetails = async (req, res) => {
         res.status(500).json({ message: 'Có lỗi xảy ra khi lấy thông tin đơn hàng.', error: error.message });
     }
 };
+
+
+// Lấy danh sách đơn hàng theo ma_nguoi_dung
+export const getOrdersByUser = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const [orders] = await pool.query(
+            `SELECT ma_don_hang, ngay_tao, tong_tien, dia_chi_giao_hang, trang_thai 
+             FROM DonHang 
+             WHERE ma_nguoi_dung = ? 
+             ORDER BY ngay_tao DESC`,
+            [userId]
+        );
+
+        if (orders.length === 0) {
+            return res.status(404).json({ message: 'Không có đơn hàng nào.' });
+        }
+
+        res.status(200).json({ orders });
+    } catch (error) {
+        console.error('Error fetching orders:', error.message);
+        res.status(500).json({ message: 'Có lỗi xảy ra khi lấy danh sách đơn hàng.', error: error.message });
+    }
+};
+
 
 // Xác nhận thanh toán
 export const confirmPayment = async (req, res) => {

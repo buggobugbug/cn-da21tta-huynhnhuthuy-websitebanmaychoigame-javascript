@@ -5,22 +5,39 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 70vh;
+    /* Đảm bảo chiều cao luôn đầy màn hình */
 }
 
+/* Container chính */
 .product-detail-container {
     display: flex;
+    flex-direction: row;
+    /* Sắp xếp theo chiều ngang */
     gap: 40px;
     max-width: 1200px;
+    width: 100%;
+    /* Đảm bảo container chiếm đủ chiều rộng */
     background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    align-items: flex-start;
 }
 
 /* Hình ảnh sản phẩm */
+.product-image {
+    flex: 1;
+    /* Chiếm một phần của container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .product-image img {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
+    height: auto;
     border-radius: 10px;
     object-fit: contain;
     background-color: #f0f0f0;
@@ -29,18 +46,33 @@
 
 /* Thông tin sản phẩm */
 .product-info {
+    flex: 2;
+    /* Chiếm hai phần của container */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
 }
 
+/* Tiêu đề sản phẩm */
 .product-title {
     font-size: 28px;
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
+    text-align: left;
 }
 
+/* Giá sản phẩm */
+.product-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f35212;
+    margin-bottom: 20px;
+}
+
+/* Mô tả sản phẩm */
 .product-description-title {
     font-size: 18px;
     font-weight: bold;
@@ -55,48 +87,28 @@
     margin-bottom: 20px;
 }
 
-.product-price {
-    font-size: 20px;
+/* Nút hành động */
+.product-actions {
+    width: 100%;
+    /* Đảm bảo nút chiếm đủ chiều rộng */
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 15px 20px;
+    font-size: 16px;
     font-weight: bold;
     color: #f35212;
-    margin-bottom: 20px;
-}
-
-.product-category,
-.product-stock {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-/* Đoạn văn bản chính sách bảo hành */
-.product-policy {
-    font-size: 14px;
-    color: #444;
-    background: #f7f7f7;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-/* Nút hành động */
-.add-to-cart-btn,
-.buy-now-btn {
-    padding: 12px 20px;
-    font-size: 16px;
+    background-color: #fff;
     border: 2px solid #f35212;
     border-radius: 5px;
+    text-align: center;
     cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: all 0.3s;
-    margin-right: 10px;
-}
-
-/* Nút Thêm vào giỏ */
-.add-to-cart-btn {
-    background-color: #fff;
-    color: #f35212;
+    transition: all 0.3s ease;
 }
 
 .add-to-cart-btn:hover {
@@ -104,19 +116,18 @@
     color: #fff;
 }
 
-/* Nút Mua ngay */
-.buy-now-btn {
-    background-color: #f35212;
-    color: #fff;
-    border: none;
-}
+/* Responsive tối ưu */
+@media (max-width: 768px) {
+    .product-detail-container {
+        flex-direction: column;
+        /* Đổi sang chiều dọc */
+    }
 
-.buy-now-btn:hover {
-    background-color: #e03a0e;
-}
+    .product-image {
+        margin-bottom: 20px;
+    }
 
-.product-price {
-    font-size: 20px;
-    font-weight: bold;
-    color: red;
+    .product-actions {
+        justify-content: center;
+    }
 }

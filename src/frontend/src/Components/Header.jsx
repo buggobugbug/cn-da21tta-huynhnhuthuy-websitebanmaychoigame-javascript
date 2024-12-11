@@ -1,6 +1,7 @@
 import React from 'react';
 import './Header.css';
-import { Box, Typography, IconButton, InputBase } from '@mui/material';
+import { Box, Typography, InputBase } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
@@ -15,6 +16,8 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Header = () => {
+    const navigate = useNavigate();
+
     const menuItems = [
         { id: 1, label: 'Nintendo', icon: <SportsEsportsIcon /> },
         { id: 2, label: 'Playstation', icon: <PlayCircleFilledIcon /> },
@@ -31,14 +34,12 @@ const Header = () => {
 
     return (
         <Box className="header">
-            {/* Logo */}
             <Box className="header-logo">
                 <Typography variant="h5" className="logo-title">
                     PLAY
                 </Typography>
             </Box>
 
-            {/* Menu Items */}
             <Box className="header-menu">
                 {menuItems.map((item) => (
                     <Box key={item.id} className="header-menu-item">
@@ -50,22 +51,20 @@ const Header = () => {
                 ))}
             </Box>
 
-            {/* Thanh tìm kiếm và icon góc phải */}
             <Box className="header-right">
-                {/* Thanh tìm kiếm */}
                 <Box className="search-box">
-                    <InputBase
-                        placeholder="Tìm sản phẩm..."
-                        className="search-input"
-                    />
+                    <InputBase placeholder="Tìm sản phẩm..." className="search-input" />
                 </Box>
 
-                {/* Biểu tượng tài khoản và giỏ hàng */}
                 <Box className="header-actions">
                     <Box className="action-item">
                         <AccountCircleIcon className="header-action-icon" />
                     </Box>
-                    <Box className="action-item">
+                    <Box
+                        className="action-item"
+                        onClick={() => navigate('/home/orders')}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <ShoppingCartIcon className="header-action-icon" />
                     </Box>
                 </Box>

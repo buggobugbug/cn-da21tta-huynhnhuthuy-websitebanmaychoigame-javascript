@@ -10,6 +10,7 @@ const ChiTietSanPham = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Lấy chi tiết sản phẩm từ backend
     useEffect(() => {
         const fetchProductDetails = async () => {
             const token = Cookies.get('accessToken');
@@ -55,6 +56,30 @@ const ChiTietSanPham = () => {
         }
     };
 
+    // Hàm thêm sản phẩm vào giỏ hàng
+    const addToCart = () => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingProduct = cart.find((item) => item.ma_san_pham === product.ma_san_pham);
+
+        if (existingProduct) {
+            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+            const updatedCart = cart.map((item) =>
+                item.ma_san_pham === product.ma_san_pham
+                    ? { ...item, so_luong: item.so_luong + 1 }
+                    : item
+            );
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+        } else {
+            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+            const newProduct = { ...product, so_luong: 1 };
+            const updatedCart = [...cart, newProduct];
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+        }
+
+        alert('Sản phẩm đã được thêm vào giỏ hàng!');
+        navigate('/home/cart'); // Điều hướng đến trang giỏ hàng
+    };
+
     if (loading) {
         return <div className="loading-message">Đang tải thông tin sản phẩm...</div>;
     }
@@ -79,9 +104,8 @@ const ChiTietSanPham = () => {
                 <div className="product-info">
                     <h1 className="product-title">{product.ten_san_pham}</h1>
                     <p className="product-price">
-                        {Math.trunc(product.gia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })}
+                        {Math.trunc(product.gia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </p>
-
                     <p className="product-category">Danh mục: {getCategoryName(product.ma_danh_muc)}</p>
 
                     {/* Mô tả sản phẩm */}
@@ -97,20 +121,8 @@ const ChiTietSanPham = () => {
 
                     {/* Nút hành động */}
                     <div className="product-actions">
-                        <button className="add-to-cart-btn">Thêm vào giỏ hàng</button>
-                        <button
-                            className="buy-now-btn"
-                            onClick={() =>
-                                navigate('/home/checkout', {
-                                    state: {
-                                        productId: product.ma_san_pham,
-                                        productPrice: product.gia,
-                                        productName: product.ten_san_pham,
-                                    },
-                                })
-                            }
-                        >
-                            Mua ngay
+                        <button className="add-to-cart-btn" onClick={addToCart}>
+                            Thêm vào giỏ hàng
                         </button>
                     </div>
                 </div>

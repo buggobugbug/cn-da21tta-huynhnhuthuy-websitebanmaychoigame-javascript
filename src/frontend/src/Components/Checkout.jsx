@@ -1,25 +1,37 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Checkout.css';
 
 const Checkout = () => {
-    const location = useLocation();
     const navigate = useNavigate();
-
-    const { productId, productPrice } = location.state || {};
-
+    const [cartItems, setCartItems] = useState([]);
     const [fullName, setFullName] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('COD');
-    const [quantity, setQuantity] = useState(1);
     const [error, setError] = useState(null);
+
+    // Lấy dữ liệu từ localStorage
+    useEffect(() => {
+        const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+        setCartItems(storedCart);
+    }, []);
+
+    // Tính tổng tiền
+    const calculateTotalPrice = () => {
+        return cartItems.reduce((total, item) => total + item.gia * item.so_luong, 0);
+    };
 
     const handleCheckout = async () => {
         const token = Cookies.get('accessToken');
         if (!token) {
             setError('Bạn cần đăng nhập để thực hiện thanh toán.');
+            return;
+        }
+
+        if (!cartItems.length) {
+            alert('Giỏ hàng trống. Không thể thanh toán.');
             return;
         }
 
@@ -32,10 +44,10 @@ const Checkout = () => {
                 },
                 body: JSON.stringify({
                     dia_chi_giao_hang: `${fullName}, ${address}`,
+                    phone_number: phoneNumber,
                     payment_method: paymentMethod,
-                    product_id: productId,
-                    product_price: productPrice,
-                    so_luong: quantity,
+                    cart_items: cartItems, // Truyền toàn bộ giỏ hàng
+                    tong_tien: calculateTotalPrice(), // Tổng tiền đã tính
                 }),
             });
 
@@ -45,9 +57,9 @@ const Checkout = () => {
 
             const data = await response.json();
             alert('Đặt hàng thành công!');
-            navigate('/home');
+            localStorage.removeItem('cart'); // Xóa giỏ hàng sau khi đặt hàng thành công
+            navigate('/home'); // Quay lại trang chủ
         } catch (error) {
-            console.error('Error during checkout:', error.message);
             setError(error.message);
         }
     };
@@ -102,16 +114,13 @@ const Checkout = () => {
                     </select>
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="quantity">Số lượng</label>
-                    <input
-                        type="number"
-                        id="quantity"
-                        value={quantity}
-                        onChange={(e) => setQuantity(Number(e.target.value))}
-                        min="1"
-                        required
-                    />
+                <div className="cart-summary">
+                    <p className="cart-total">
+                        Tổng tiền: {calculateTotalPrice().toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND',
+                        })}
+                    </p>
                 </div>
 
                 <button className="checkout-btn" onClick={handleCheckout}>

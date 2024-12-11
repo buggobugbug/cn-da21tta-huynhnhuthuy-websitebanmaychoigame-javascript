@@ -1,0 +1,78 @@
+/* Tổng thể trang danh sách đơn hàng */
+.order-list-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.order-list-container h2 {
+    font-size: 24px;
+    color: #343a40;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.order-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.order-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #495057;
+}
+
+.order-item p strong {
+    color: #212529;
+}
+
+.view-details-btn {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.view-details-btn:hover {
+    background-color: #0056b3;
+}
+
+.loading-message,
+.error-message {
+    text-align: center;
+    font-size: 16px;
+    color: #dc3545;
+    margin-top: 20px;
+}
+
+p {
+    font-family: Arial, sans-serif;
+}

@@ -9,6 +9,9 @@ import ChiTietSanPham from './Components/Chitietsanpham';
 import Checkout from './Components/Checkout';
 import Header from './Components/Header';
 import Footer from './Components/Footer';
+import Cart from './Components/Cart';
+import OrderDetails from './Components/OrderDetails';
+import OrderDetailsPage from './Components/OrderDetailsPage'; // Import trang chi tiết đơn hàng
 import 'react-toastify/dist/ReactToastify.css';
 
 // Layout với Header và Footer
@@ -30,7 +33,10 @@ function App() {
         <Route path="/home" element={<HomeLayout />}>
           <Route index element={<Home />} />
           <Route path="chitietsanpham/:id" element={<ChiTietSanPham />} />
-          <Route path="/home/checkout" element={<Checkout />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="orders" element={<OrderDetails />} /> {/* Danh sách đơn hàng */}
+          <Route path="order/:orderId" element={<OrderDetailsPage />} /> {/* Chi tiết đơn hàng */}
         </Route>
 
         {/* Các route không có Header và Footer */}
