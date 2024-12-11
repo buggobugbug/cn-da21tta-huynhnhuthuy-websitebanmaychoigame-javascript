@@ -49,7 +49,7 @@ export const login = async (req, res) => {
         const token = jwt.sign(
             { id: user[0].ma_nguoi_dung, ten_dang_nhap: user[0].ten_dang_nhap, ma_vai_tro: user[0].ma_vai_tro },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '7d' }
         );
 
         res.status(200).json({

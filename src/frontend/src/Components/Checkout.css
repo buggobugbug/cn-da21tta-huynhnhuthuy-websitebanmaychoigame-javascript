@@ -1,0 +1,103 @@
+/* Container tổng thể */
+.checkout-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Tiêu đề */
+.checkout-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Form nhóm */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+}
+
+/* Form ngang */
+.inline-form-group {
+    display: flex;
+    gap: 20px;
+}
+
+.inline-form-group .form-group {
+    flex: 1;
+}
+
+/* Radio button */
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.radio-group input {
+    margin-right: 10px;
+}
+
+/* Giao diện thông báo phương thức vận chuyển */
+.shipping-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px dashed #ddd;
+    text-align: center;
+    border-radius: 5px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Button */
+.checkout-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background-color: #0056b3;
+}

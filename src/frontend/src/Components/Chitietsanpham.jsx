@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './ChiTietSanPham.css';
 
 const ChiTietSanPham = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProductDetails = async () => {
             const token = Cookies.get('accessToken');
             if (!token) {
                 setError('Bạn cần đăng nhập để xem chi tiết sản phẩm.');
+                setLoading(false);
                 return;
             }
 
@@ -32,6 +35,8 @@ const ChiTietSanPham = () => {
                 setProduct(data);
             } catch (error) {
                 setError(error.message);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -50,12 +55,16 @@ const ChiTietSanPham = () => {
         }
     };
 
+    if (loading) {
+        return <div className="loading-message">Đang tải thông tin sản phẩm...</div>;
+    }
+
     if (error) {
         return <div className="error-message">{error}</div>;
     }
 
     if (!product) {
-        return <div>Đang tải thông tin sản phẩm...</div>;
+        return <div className="error-message">Sản phẩm không tồn tại.</div>;
     }
 
     return (
@@ -89,7 +98,20 @@ const ChiTietSanPham = () => {
                     {/* Nút hành động */}
                     <div className="product-actions">
                         <button className="add-to-cart-btn">Thêm vào giỏ hàng</button>
-                        <button className="buy-now-btn">Mua ngay</button>
+                        <button
+                            className="buy-now-btn"
+                            onClick={() =>
+                                navigate('/home/checkout', {
+                                    state: {
+                                        productId: product.ma_san_pham,
+                                        productPrice: product.gia,
+                                        productName: product.ten_san_pham,
+                                    },
+                                })
+                            }
+                        >
+                            Mua ngay
+                        </button>
                     </div>
                 </div>
             </div>
