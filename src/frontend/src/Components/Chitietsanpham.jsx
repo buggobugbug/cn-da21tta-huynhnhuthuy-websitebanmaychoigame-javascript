@@ -3,14 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './ChiTietSanPham.css';
 
-const ChiTietSanPham = () => {
+const ProductDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Lấy chi tiết sản phẩm từ backend
     useEffect(() => {
         const fetchProductDetails = async () => {
             const token = Cookies.get('accessToken');
@@ -93,42 +92,38 @@ const ChiTietSanPham = () => {
     }
 
     return (
-        <div className="product-detail">
+        <div className="product-detail-page">
             <div className="product-detail-container">
                 {/* Hình ảnh sản phẩm */}
-                <div className="product-image">
+                <div className="product-detail-image">
                     <img src={`http://localhost:5000${product.hinh_anh}`} alt={product.ten_san_pham} />
                 </div>
 
                 {/* Thông tin sản phẩm */}
-                <div className="product-info">
-                    <h1 className="product-title">{product.ten_san_pham}</h1>
-                    <p className="product-price">
+                <div className="product-detail-info">
+                    <h1 className="product-detail-title">{product.ten_san_pham}</h1>
+                    <p className="product-detail-price">
                         {Math.trunc(product.gia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </p>
-                    <p className="product-category">Danh mục: {getCategoryName(product.ma_danh_muc)}</p>
+                    <p className="product-detail-category">Danh mục: {getCategoryName(product.ma_danh_muc)}</p>
 
-                    {/* Mô tả sản phẩm */}
-                    <div>
-                        <p className="product-description-title">Mô tả sản phẩm</p>
-                        <p className="product-description">{product.mo_ta}</p>
+                    <button className="product-detail-cart-btn" onClick={addToCart}>
+                        Thêm vào giỏ hàng
+                    </button>
+
+                    <div className="product-detail-description">
+                        <h2>Mô tả sản phẩm</h2>
+                        <p>{product.mo_ta}</p>
                     </div>
 
-                    {/* Đoạn văn bản chính sách */}
-                    <p className="product-policy">
+                    <p className="product-detail-policy">
                         Sản phẩm được bảo hành chính hãng 12 tháng và hỗ trợ đổi trả trong vòng 7 ngày nếu phát hiện lỗi từ nhà sản xuất.
                     </p>
-
-                    {/* Nút hành động */}
-                    <div className="product-actions">
-                        <button className="add-to-cart-btn" onClick={addToCart}>
-                            Thêm vào giỏ hàng
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
+
     );
 };
 
-export default ChiTietSanPham;
+export default ProductDetail;

@@ -41,7 +41,6 @@ const Home = () => {
 
     return (
         <div className="home">
-
             <div className="home-container">
                 {/* Sidebar */}
                 <Sidebar />
@@ -52,32 +51,38 @@ const Home = () => {
 
                     {/* Sản phẩm */}
                     <section className="products-section">
-                        <h2>Tất cả sản phẩm</h2>
+                        <h2 className="section-title">Tất cả sản phẩm</h2>
                         {error ? (
                             <p className="error-message">{error}</p>
                         ) : (
-                                <div className="product-list">
-                                    {products.map((product) => (
-                                        <div
-                                            key={product.ma_san_pham}
-                                            className="product-card"
-                                            onClick={() => (window.location.href = `/home/chitietsanpham/${product.ma_san_pham}`)}
-                                        >
-                                            <img
-                                                src={`http://localhost:5000${product.hinh_anh}`}
-                                                alt={product.ten_san_pham}
-                                                className="product-image"
-                                            />
-                                            <div className="product-info">
-                                                <h3 className="product-title">{product.ten_san_pham}</h3>
-                                                <p className="product-price">
-                                                    {Math.trunc(product.gia).toLocaleString('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })}
-                                                </p>
-                                            </div>
-                                            <button className="add-to-cart-btn">Thêm vào giỏ</button>
+                            <div className="product-grid">
+                                {products.map((product) => (
+                                    <div
+                                        key={product.ma_san_pham}
+                                        className="product-card"
+                                        onClick={() =>
+                                            (window.location.href = `/home/chitietsanpham/${product.ma_san_pham}`)
+                                        }
+                                    >
+                                        <img
+                                            src={`http://localhost:5000${product.hinh_anh}`}
+                                            alt={product.ten_san_pham}
+                                            className="product-image"
+                                        />
+                                        <div className="product-info">
+                                            <h3 className="product-title">{product.ten_san_pham}</h3>
+                                            <p className="product-price">
+                                                {Math.trunc(product.gia).toLocaleString('vi-VN', {
+                                                    style: 'currency',
+                                                    currency: 'VND',
+                                                    maximumFractionDigits: 0,
+                                                })}
+                                            </p>
                                         </div>
-                                    ))}
-                                </div>
+                                        <button className="add-to-cart-btn">Thêm vào giỏ</button>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </section>
                 </main>
