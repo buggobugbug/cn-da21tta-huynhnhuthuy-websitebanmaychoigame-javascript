@@ -90,3 +90,8 @@
     margin-top: 20px;
     line-height: 1.5;
 }
+
+.product-detail-cart-btn.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

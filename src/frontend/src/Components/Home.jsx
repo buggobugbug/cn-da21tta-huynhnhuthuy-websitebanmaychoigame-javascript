@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Carousel from './Carousel';
-import Sidebar from './Sidebar';
 import './Home.css';
 
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
+    const location = useLocation(); // Lấy thông tin URL hiện tại
+    const searchQuery = new URLSearchParams(location.search).get('search'); // Lấy từ khóa tìm kiếm từ query string
+    const navigate = useNavigate(); // Sử dụng điều hướng để mở trang chi tiết
 
-    // Gọi API lấy tất cả sản phẩm
     useEffect(() => {
         const fetchProducts = async () => {
-            const token = Cookies.get('accessToken'); // Lấy token từ cookie
+            const token = Cookies.get('accessToken');
             if (!token) {
                 setError('Bạn cần đăng nhập để xem sản phẩm.');
                 return;
@@ -30,21 +32,26 @@ const Home = () => {
                 }
 
                 const data = await response.json();
-                setProducts(data);
+
+                // Lọc sản phẩm nếu có từ khóa tìm kiếm
+                const filteredProducts = searchQuery
+                    ? data.filter((product) =>
+                        product.ten_san_pham.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                    : data;
+
+                setProducts(filteredProducts);
             } catch (error) {
                 setError(error.message);
             }
         };
 
         fetchProducts();
-    }, []);
+    }, [searchQuery]); // Tự động gọi lại khi từ khóa tìm kiếm thay đổi
 
     return (
         <div className="home">
             <div className="home-container">
-                {/* Sidebar */}
-                <Sidebar />
-
                 <main className="home-content">
                     {/* Slider */}
                     <Carousel />
@@ -60,9 +67,7 @@ const Home = () => {
                                     <div
                                         key={product.ma_san_pham}
                                         className="product-card"
-                                        onClick={() =>
-                                            (window.location.href = `/home/chitietsanpham/${product.ma_san_pham}`)
-                                        }
+                                        onClick={() => navigate(`/home/chitietsanpham/${product.ma_san_pham}`)}
                                     >
                                         <img
                                             src={`http://localhost:5000${product.hinh_anh}`}
@@ -75,11 +80,9 @@ const Home = () => {
                                                 {Math.trunc(product.gia).toLocaleString('vi-VN', {
                                                     style: 'currency',
                                                     currency: 'VND',
-                                                    maximumFractionDigits: 0,
                                                 })}
                                             </p>
                                         </div>
-                                        <button className="add-to-cart-btn">Thêm vào giỏ</button>
                                     </div>
                                 ))}
                             </div>

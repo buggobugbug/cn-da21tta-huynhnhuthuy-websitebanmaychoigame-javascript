@@ -23,11 +23,27 @@ export const createOrder = async (req, res) => {
         );
         const cartId = cartResult.insertId;
 
-        // Thêm từng sản phẩm vào bảng SanPhamGioHang
+        // Xử lý từng sản phẩm trong giỏ hàng
         for (const item of cart_items) {
+            // Thêm sản phẩm vào bảng SanPhamGioHang
             await pool.query(
                 `INSERT INTO SanPhamGioHang (ma_gio_hang, ma_san_pham, so_luong) VALUES (?, ?, ?)`,
                 [cartId, item.ma_san_pham, item.so_luong]
+            );
+
+            // Trừ số lượng sản phẩm trong bảng SanPham
+            const [product] = await pool.query(
+                `SELECT so_luong FROM SanPham WHERE ma_san_pham = ?`,
+                [item.ma_san_pham]
+            );
+
+            if (!product.length || product[0].so_luong < item.so_luong) {
+                throw new Error(`Sản phẩm ${item.ma_san_pham} không đủ số lượng.`);
+            }
+
+            await pool.query(
+                `UPDATE SanPham SET so_luong = so_luong - ? WHERE ma_san_pham = ?`,
+                [item.so_luong, item.ma_san_pham]
             );
         }
 

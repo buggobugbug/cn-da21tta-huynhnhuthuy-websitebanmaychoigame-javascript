@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import './Header.css';
 import { Box, Typography, InputBase } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../context/CartContext';
+
+// Import các icon từ Material-UI
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
@@ -14,9 +17,14 @@ import StarIcon from '@mui/icons-material/Star';
 import ArticleIcon from '@mui/icons-material/Article';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const Header = () => {
     const navigate = useNavigate();
+    const { cartItems } = useContext(CartContext); // Lấy số lượng giỏ hàng từ context
+    const [searchQuery, setSearchQuery] = useState(''); // Lưu trữ từ khóa tìm kiếm
+
+    const cartCount = cartItems.reduce((sum, item) => sum + item.so_luong, 0);
 
     const menuItems = [
         { id: 1, label: 'Nintendo', icon: <SportsEsportsIcon /> },
@@ -32,14 +40,23 @@ const Header = () => {
         { id: 11, label: 'Tin tức', icon: <ArticleIcon /> },
     ];
 
+    // Hàm xử lý tìm kiếm
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            navigate(`/home?search=${searchQuery}`); // Điều hướng đến trang Home với từ khóa tìm kiếm
+        }
+    };
+
     return (
         <Box className="header">
-            <Box className="header-logo">
+            {/* Logo */}
+            <Box className="header-logo" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
                 <Typography variant="h5" className="logo-title">
                     PLAY
                 </Typography>
             </Box>
 
+            {/* Menu */}
             <Box className="header-menu">
                 {menuItems.map((item) => (
                     <Box key={item.id} className="header-menu-item">
@@ -51,9 +68,16 @@ const Header = () => {
                 ))}
             </Box>
 
+            {/* Right Actions */}
             <Box className="header-right">
                 <Box className="search-box">
-                    <InputBase placeholder="Tìm sản phẩm..." className="search-input" />
+                    <InputBase
+                        placeholder="Tìm sản phẩm..."
+                        className="search-input"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyPress={handleSearch} // Thực hiện tìm kiếm khi nhấn Enter
+                    />
                 </Box>
 
                 <Box className="header-actions">
@@ -61,11 +85,19 @@ const Header = () => {
                         <AccountCircleIcon className="header-action-icon" />
                     </Box>
                     <Box
+                        className="action-item cart-icon"
+                        onClick={() => navigate('/home/cart')}
+                        style={{ cursor: 'pointer', position: 'relative' }}
+                    >
+                        <ShoppingCartIcon className="header-action-icon" />
+                        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                    </Box>
+                    <Box
                         className="action-item"
                         onClick={() => navigate('/home/orders')}
                         style={{ cursor: 'pointer' }}
                     >
-                        <ShoppingCartIcon className="header-action-icon" />
+                        <ListAltIcon className="header-action-icon" />
                     </Box>
                 </Box>
             </Box>

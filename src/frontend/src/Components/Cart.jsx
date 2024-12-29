@@ -1,32 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../context/CartContext'; // Import context
 import './Cart.css';
 
 const Cart = () => {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState([]);
-
-    // Lấy giỏ hàng từ localStorage
-    useEffect(() => {
-        const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCartItems(storedCart);
-    }, []);
-
-    const updateQuantity = (productId, newQuantity) => {
-        const updatedCart = cartItems.map((item) =>
-            item.ma_san_pham === productId
-                ? { ...item, so_luong: Math.max(newQuantity, 1) } // Đảm bảo số lượng không nhỏ hơn 1
-                : item
-        );
-        setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-    };
-
-    const removeItem = (productId) => {
-        const updatedCart = cartItems.filter((item) => item.ma_san_pham !== productId);
-        setCartItems(updatedCart);
-        localStorage.setItem('cart', JSON.stringify(updatedCart));
-    };
+    const { cartItems, updateQuantity, removeItem } = useContext(CartContext); // Lấy dữ liệu từ context
 
     const calculateTotalPrice = () => {
         return cartItems.reduce((total, item) => total + item.gia * item.so_luong, 0);
@@ -35,7 +14,6 @@ const Cart = () => {
     return (
         <div className="cart-container">
             <h2 className="cart-title">GIỎ HÀNG CỦA BẠN</h2>
-
             <div className="cart-content">
                 <div className="cart-items">
                     {cartItems.length === 0 ? (
@@ -86,7 +64,6 @@ const Cart = () => {
                         ))
                     )}
                 </div>
-
                 <div className="cart-summary">
                     <h3>Thông tin đơn hàng</h3>
                     <p className="cart-total">

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { CartContext } from '../context/CartContext'; // Import CartContext
 import './ChiTietSanPham.css';
 
 const ProductDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Sử dụng navigate để điều hướng
+    const { addToCart } = useContext(CartContext); // Lấy hàm addToCart từ context
     const [product, setProduct] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -55,28 +57,15 @@ const ProductDetail = () => {
         }
     };
 
-    // Hàm thêm sản phẩm vào giỏ hàng
-    const addToCart = () => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingProduct = cart.find((item) => item.ma_san_pham === product.ma_san_pham);
-
-        if (existingProduct) {
-            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
-            const updatedCart = cart.map((item) =>
-                item.ma_san_pham === product.ma_san_pham
-                    ? { ...item, so_luong: item.so_luong + 1 }
-                    : item
-            );
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
+    // Hàm thêm sản phẩm vào giỏ hàng và điều hướng
+    const handleAddToCart = () => {
+        if (product.so_luong > 0) {
+            addToCart(product); // Gọi hàm thêm sản phẩm vào giỏ hàng từ context
+            alert('Sản phẩm đã được thêm vào giỏ hàng!');
+            navigate('/home/cart'); // Chuyển hướng đến trang giỏ hàng
         } else {
-            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
-            const newProduct = { ...product, so_luong: 1 };
-            const updatedCart = [...cart, newProduct];
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            alert('Sản phẩm này hiện đang hết hàng!');
         }
-
-        alert('Sản phẩm đã được thêm vào giỏ hàng!');
-        navigate('/home/cart'); // Điều hướng đến trang giỏ hàng
     };
 
     if (loading) {
@@ -107,9 +96,15 @@ const ProductDetail = () => {
                     </p>
                     <p className="product-detail-category">Danh mục: {getCategoryName(product.ma_danh_muc)}</p>
 
-                    <button className="product-detail-cart-btn" onClick={addToCart}>
-                        Thêm vào giỏ hàng
-                    </button>
+                    {product.so_luong > 0 ? (
+                        <button className="product-detail-cart-btn" onClick={handleAddToCart}>
+                            Thêm vào giỏ hàng
+                        </button>
+                    ) : (
+                        <button className="product-detail-cart-btn disabled" disabled>
+                            Tạm thời hết hàng
+                        </button>
+                    )}
 
                     <div className="product-detail-description">
                         <h2>Mô tả sản phẩm</h2>
@@ -122,7 +117,6 @@ const ProductDetail = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 

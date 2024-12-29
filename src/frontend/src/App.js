@@ -11,7 +11,8 @@ import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Cart from './Components/Cart';
 import OrderDetails from './Components/OrderDetails';
-import OrderDetailsPage from './Components/OrderDetailsPage'; // Import trang chi tiết đơn hàng
+import OrderDetailsPage from './Components/OrderDetailsPage';
+import CartProvider from './context/CartContext'; // Context để quản lý giỏ hàng
 import 'react-toastify/dist/ReactToastify.css';
 
 // Layout với Header và Footer
@@ -27,27 +28,26 @@ const HomeLayout = () => (
 
 function App() {
   return (
-    <div id="root">
-      <Routes>
-        {/* Group các route con của Home */}
-        <Route path="/home" element={<HomeLayout />}>
-          <Route index element={<Home />} />
-          <Route path="chitietsanpham/:id" element={<ChiTietSanPham />} />
-          <Route path="checkout" element={<Checkout />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="orders" element={<OrderDetails />} /> {/* Danh sách đơn hàng */}
-          <Route path="order/:orderId" element={<OrderDetailsPage />} /> {/* Chi tiết đơn hàng */}
-        </Route>
-
-        {/* Các route không có Header và Footer */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route path="products" element={<AddProduct />} />
-          <Route path="all-products" element={<Products />} />
-        </Route>
-      </Routes>
-    </div>
+    <CartProvider>
+      <div id="root">
+        <Routes>
+          <Route path="/home" element={<HomeLayout />}>
+            <Route index element={<Home />} />
+            <Route path="chitietsanpham/:id" element={<ChiTietSanPham />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="orders" element={<OrderDetails />} />
+            <Route path="order/:orderId" element={<OrderDetailsPage />} />
+          </Route>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route path="products" element={<AddProduct />} />
+            <Route path="all-products" element={<Products />} />
+          </Route>
+        </Routes>
+      </div>
+    </CartProvider>
   );
 }
 
