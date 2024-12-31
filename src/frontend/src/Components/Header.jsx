@@ -1,19 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Header.css';
 import { Box, Typography, InputBase } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import Cookies from 'js-cookie';
 
 // Import các icon từ Material-UI
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
-import BackPackIcon from '@mui/icons-material/Backpack';
+import BackpackIcon from '@mui/icons-material/Backpack';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AppsIcon from '@mui/icons-material/Apps';
 import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon';
 import BuildIcon from '@mui/icons-material/Build';
-import StarIcon from '@mui/icons-material/Star';
+import StarsIcon from '@mui/icons-material/Stars';
 import ArticleIcon from '@mui/icons-material/Article';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -21,42 +22,59 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const Header = () => {
     const navigate = useNavigate();
-    const { cartItems } = useContext(CartContext); // Lấy số lượng giỏ hàng từ context
-    const [searchQuery, setSearchQuery] = useState(''); // Lưu trữ từ khóa tìm kiếm
+    const { cartItems } = useContext(CartContext);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [maNguoiDung, setMaNguoiDung] = useState(null);
 
     const cartCount = cartItems.reduce((sum, item) => sum + item.so_luong, 0);
 
     const menuItems = [
         { id: 1, label: 'Nintendo', icon: <SportsEsportsIcon /> },
-        { id: 2, label: 'Playstation', icon: <PlayCircleFilledIcon /> },
+        { id: 2, label: 'Playstation', icon: <PlayCircleOutlineIcon /> },
         { id: 3, label: 'Gaming Gear', icon: <KeyboardIcon /> },
-        { id: 4, label: 'Lifestyle', icon: <BackPackIcon /> },
+        { id: 4, label: 'Lifestyle', icon: <BackpackIcon /> },
         { id: 5, label: 'Trading Card', icon: <CreditCardIcon /> },
         { id: 6, label: 'Kotobukiya', icon: <AppsIcon /> },
-        { id: 7, label: 'Hobby', icon: <AppsIcon /> },
-        { id: 8, label: 'Pokemon', icon: <CatchingPokemonIcon /> },
-        { id: 9, label: 'Dụng cụ', icon: <BuildIcon /> },
-        { id: 10, label: 'Dịch vụ', icon: <StarIcon /> },
-        { id: 11, label: 'Tin tức', icon: <ArticleIcon /> },
+        { id: 7, label: 'Hobby', icon: <CatchingPokemonIcon /> },
+        { id: 8, label: 'Dụng cụ', icon: <BuildIcon /> },
+        { id: 9, label: 'Dịch vụ', icon: <StarsIcon /> },
+        { id: 10, label: 'Tin tức', icon: <ArticleIcon /> },
     ];
 
-    // Hàm xử lý tìm kiếm
+    useEffect(() => {
+        const token = Cookies.get('accessToken');
+        if (token) {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            setMaNguoiDung(decodedToken.ma_nguoi_dung || null);
+        }
+    }, []);
+
+    const handleAccountClick = () => {
+        const maNguoiDung = Cookies.get('maNguoiDung'); // Lấy từ Cookies
+
+        if (maNguoiDung) {
+            navigate(`/home/user/${maNguoiDung}`);
+        } else {
+            alert('Bạn cần đăng nhập để xem thông tin tài khoản!');
+            navigate('/login');
+        }
+    };
+
+
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            navigate(`/home?search=${searchQuery}`); // Điều hướng đến trang Home với từ khóa tìm kiếm
+            navigate(`/home?search=${searchQuery}`);
         }
     };
 
     return (
         <Box className="header">
-            {/* Logo */}
             <Box className="header-logo" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>
                 <Typography variant="h5" className="logo-title">
                     PLAY
                 </Typography>
             </Box>
 
-            {/* Menu */}
             <Box className="header-menu">
                 {menuItems.map((item) => (
                     <Box key={item.id} className="header-menu-item">
@@ -68,7 +86,6 @@ const Header = () => {
                 ))}
             </Box>
 
-            {/* Right Actions */}
             <Box className="header-right">
                 <Box className="search-box">
                     <InputBase
@@ -76,12 +93,12 @@ const Header = () => {
                         className="search-input"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyPress={handleSearch} // Thực hiện tìm kiếm khi nhấn Enter
+                        onKeyPress={handleSearch}
                     />
                 </Box>
 
                 <Box className="header-actions">
-                    <Box className="action-item">
+                    <Box className="action-item" onClick={handleAccountClick} style={{ cursor: 'pointer' }}>
                         <AccountCircleIcon className="header-action-icon" />
                     </Box>
                     <Box

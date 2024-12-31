@@ -15,38 +15,29 @@ function Login() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', {
-                ten_dang_nhap: tenDangNhap, // Gửi ten_dang_nhap thay vì email
-                mat_khau: matKhau,  // Gửi mat_khau thay vì password
+                ten_dang_nhap: tenDangNhap,
+                mat_khau: matKhau,
             });
 
-            // Kiểm tra nếu message trả về là "Đăng nhập thành công!"
-            if (response.data.message === "Đăng nhập thành công!" && response.data.token) {
-                toast.success(response.data.message);
-                console.log('Login successful:', response.data); // Log thông tin thành công
-                
-                Cookies.set("accessToken", response.data.token, { expires: 7 });
+            if (response.data.success && response.data.token) {
+                const { token, user } = response.data;
+                Cookies.set("accessToken", token, { expires: 7 });
+                Cookies.set("maNguoiDung", user.ma_nguoi_dung, { expires: 7 }); // Lưu mã người dùng
+                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-                axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("accessToken")}`
-
-                const { ma_vai_tro } = response.data.user; // Lấy ma_vai_tro từ user trả về
-
-                console.log(response.data);
-
-
-                if (ma_vai_tro === 1) {
-                    navigate("/dashboard"); // Chuyển hướng đến dashboard cho Admin
-                } else if (ma_vai_tro === 2) {
-                    navigate("/home"); // Chuyển hướng đến home cho User thường
+                if (user.ma_vai_tro === 1) {
+                    navigate("/dashboard");
+                } else if (user.ma_vai_tro === 2) {
+                    navigate("/home");
                 } else {
                     toast.error("Không xác định quyền người dùng");
                 }
             } else {
-                toast.error("Login failed");
-                console.log('Login failed:', response.data); // Log thông tin lỗi
+                toast.error("Đăng nhập thất bại!");
             }
         } catch (error) {
-            console.log(error); // Log lỗi nếu có sự cố khi gửi yêu cầu
-            toast.error("Something went wrong");
+            console.error(error);
+            toast.error("Có lỗi xảy ra!");
         }
     };
 

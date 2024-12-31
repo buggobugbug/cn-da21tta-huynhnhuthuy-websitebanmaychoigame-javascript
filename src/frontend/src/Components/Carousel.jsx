@@ -22,43 +22,43 @@ const carouselData = [
 const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Hàm chuyển sang ảnh tiếp theo
     const nextSlide = useCallback(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % carouselData.length);
     }, []);
 
-    // Hàm quay lại ảnh trước
     const prevSlide = useCallback(() => {
         setCurrentIndex(
             (prevIndex) => (prevIndex - 1 + carouselData.length) % carouselData.length
         );
     }, []);
 
-    // Tự động chuyển slider mỗi 5 giây
     useEffect(() => {
-        const interval = setInterval(nextSlide, 5000); // 5 giây
-        return () => clearInterval(interval); // Cleanup khi component bị unmount
+        const interval = setInterval(nextSlide, 5000);
+        return () => clearInterval(interval);
     }, [nextSlide]);
 
     return (
-        <div className="carousel">
-            <div className="carousel-container">
+        <div className="carousel-custom">
+            <div className="carousel-custom-container">
                 {/* Nút Previous */}
-                <button className="carousel-button prev" onClick={prevSlide}>
+                <button className="carousel-custom-button prev" onClick={prevSlide}>
                     &#10094;
                 </button>
 
-                {/* Slider: Hiển thị tất cả ảnh và di chuyển chúng */}
-                <div className="carousel-items" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
-                    {carouselData.map((slide, index) => (
-                        <div key={slide.id} className="carousel-item">
+                {/* Slider */}
+                <div
+                    className="carousel-custom-items"
+                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                >
+                    {carouselData.map((slide) => (
+                        <div key={slide.id} className="carousel-custom-item">
                             <img src={slide.imgSrc} alt={`slide-${slide.id}`} />
                         </div>
                     ))}
                 </div>
 
                 {/* Nút Next */}
-                <button className="carousel-button next" onClick={nextSlide}>
+                <button className="carousel-custom-button next" onClick={nextSlide}>
                     &#10095;
                 </button>
             </div>

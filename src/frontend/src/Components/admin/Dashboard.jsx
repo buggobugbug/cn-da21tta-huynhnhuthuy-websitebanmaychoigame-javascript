@@ -33,7 +33,7 @@ const Dashboard = () => {
                     <li
                         onClick={() => navigate("/dashboard/products")}
                     >
-                        <a href="">Sản phẩm</a>
+                        <a href="">Thêm sản phẩm mới</a>
                     </li>
 
                     {/* Liên kết tới trang Thương hiệu sản phẩm */}
@@ -45,7 +45,7 @@ const Dashboard = () => {
 
                     {/* Liên kết tới trang Tài khoản người dùng */}
                     <li
-                        onClick={() => navigate("/dashboard/accounts")}
+                        onClick={() => navigate("/dashboard/users")}
                     >
                         <a href="">Tài khoản</a>
                     </li>

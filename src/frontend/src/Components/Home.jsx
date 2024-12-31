@@ -47,7 +47,7 @@ const Home = () => {
         };
 
         fetchProducts();
-    }, [searchQuery]); // Tự động gọi lại khi từ khóa tìm kiếm thay đổi
+    }, [searchQuery]); 
 
     return (
         <div className="home">

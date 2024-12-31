@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie'; // Thêm import js-cookie
+import { toast } from 'react-toastify'; // Import react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 import './css/addproducts.scss';
 
 const AddProduct = () => {
@@ -10,8 +12,8 @@ const AddProduct = () => {
         mo_ta: '',
         gia: '',
         ma_danh_muc: '',
-        so_luong: '', // Thêm trường so_luong
-        hinh_anh: null // Đổi hinh_anh thành null (sẽ chứa file)
+        so_luong: '',
+        hinh_anh: null
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -24,34 +26,30 @@ const AddProduct = () => {
         }));
     };
 
-    // Xử lý thay đổi cho file input
     const handleFileChange = (e) => {
         setProduct((prevProduct) => ({
             ...prevProduct,
-            hinh_anh: e.target.files[0] // Lưu trữ tệp được chọn
+            hinh_anh: e.target.files[0]
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Kiểm tra dữ liệu đầu vào
         if (!product.ten_san_pham || !product.gia || !product.ma_danh_muc || !product.so_luong || !product.hinh_anh) {
             setError('Vui lòng điền đầy đủ thông tin');
             return;
         }
 
-        // Tạo form data để gửi lên server
         const formData = new FormData();
         formData.append('ten_san_pham', product.ten_san_pham);
         formData.append('mo_ta', product.mo_ta);
         formData.append('gia', product.gia);
         formData.append('ma_danh_muc', product.ma_danh_muc);
-        formData.append('so_luong', product.so_luong); // Thêm so_luong vào formData
+        formData.append('so_luong', product.so_luong);
         formData.append('hinh_anh', product.hinh_anh);
 
-        const token = Cookies.get('accessToken'); // Lấy token từ cookie
-        console.log(token);
+        const token = Cookies.get('accessToken');
 
         if (!token) {
             setError('Vui lòng đăng nhập lại');
@@ -61,18 +59,25 @@ const AddProduct = () => {
         try {
             const response = await axios.post('http://localhost:5000/api/products/add', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', // Đặt header cho việc upload file
-                    'Authorization': `Bearer ${token}`  // Sử dụng token từ cookie
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
                 }
             });
             if (response.status === 201) {
-                navigate('/dashboard/products');  // Chuyển hướng về trang quản lý sản phẩm
+                toast.success('Thêm sản phẩm thành công!', {
+                    position: 'top-right',
+                });
+                navigate('/dashboard/all-products');
             }
         } catch (err) {
             console.error('Error adding product:', err);
             setError('Có lỗi xảy ra khi thêm sản phẩm.');
+            toast.error('Thêm sản phẩm thất bại.', {
+                position: 'top-right',
+            });
         }
     };
+
 
     return (
         <div>
@@ -122,7 +127,6 @@ const AddProduct = () => {
                     />
                 </div>
 
-                {/* Nhập số lượng */}
                 <div className="form-group">
                     <label>Số lượng</label>
                     <input
@@ -134,7 +138,6 @@ const AddProduct = () => {
                     />
                 </div>
 
-                {/* Chọn file hình ảnh */}
                 <div className="form-group">
                     <label className="file-label" htmlFor="hinh_anh">Chọn hình ảnh</label>
                     <input
