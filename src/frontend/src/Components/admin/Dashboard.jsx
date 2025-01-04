@@ -29,41 +29,26 @@ const Dashboard = () => {
                     <h2 className="text-white">Dashboard</h2>
                 </Link>
                 <ul>
-                    {/* Liên kết tới trang Sản phẩm */}
-                    <li
-                        onClick={() => navigate("/dashboard/products")}
-                    >
-                        <a href="">Thêm sản phẩm mới</a>
+                    <li onClick={() => navigate("/dashboard/products")}>
+                        <a href="#">Thêm sản phẩm mới</a>
                     </li>
-
-                    {/* Liên kết tới trang Thương hiệu sản phẩm */}
-                    <li
-                        onClick={() => navigate("/dashboard/manufacturers")}
-                    >
-                        <a href="">Thương hiệu</a>
+                    <li onClick={() => navigate("/dashboard/manufacturers")}>
+                        <a href="#">Thương hiệu</a>
                     </li>
-
-                    {/* Liên kết tới trang Tài khoản người dùng */}
-                    <li
-                        onClick={() => navigate("/dashboard/users")}
-                    >
-                        <a href="">Tài khoản</a>
+                    <li onClick={() => navigate("/dashboard/users")}>
+                        <a href="#">Tài khoản</a>
                     </li>
-
-                    {/* Liên kết tới trang Tất cả sản phẩm */}
-                    <li
-                        onClick={() => navigate("/dashboard/all-products")}
-                    >
-                        <a href="">Tất cả sản phẩm</a>
+                    <li onClick={() => navigate("/dashboard/all-products")}>
+                        <a href="#">Tất cả sản phẩm</a>
                     </li>
-
-                    {/* Liên kết đăng xuất */}
-                    <li
-                        onClick={onLogout}
-                    >
-                        <a href="">Đăng xuất</a>
+                    <li onClick={() => navigate("/dashboard/manage-orders")}>
+                        <a href="#">Quản lý đơn hàng</a> {/* Menu mới */}
+                    </li>
+                    <li onClick={onLogout}>
+                        <a href="#">Đăng xuất</a>
                     </li>
                 </ul>
+
             </div>
 
             <div className="main-content">

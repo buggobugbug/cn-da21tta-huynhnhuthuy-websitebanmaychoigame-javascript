@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../context/CartContext'; // Import context
+import { CartContext } from '../context/CartContext';
 import './Cart.css';
 
 const Cart = () => {
     const navigate = useNavigate();
-    const { cartItems, updateQuantity, removeItem } = useContext(CartContext); // Lấy dữ liệu từ context
+    const { cartItems, updateQuantity, removeItem } = useContext(CartContext);
 
     const calculateTotalPrice = () => {
         return cartItems.reduce((total, item) => total + item.gia * item.so_luong, 0);
@@ -13,7 +13,7 @@ const Cart = () => {
 
     return (
         <div className="cart-container">
-            <h2 className="cart-title">GIỎ HÀNG CỦA BẠN</h2>
+            <h2 className="cart-title">Giỏ Hàng Của Bạn</h2>
             <div className="cart-content">
                 <div className="cart-items">
                     {cartItems.length === 0 ? (
@@ -37,7 +37,7 @@ const Cart = () => {
                                     <div className="cart-item-quantity">
                                         <button
                                             className="quantity-btn"
-                                            onClick={() => updateQuantity(item.ma_san_pham, item.so_luong - 1)}
+                                            onClick={() => updateQuantity(item.ma_san_pham, item.so_luong - 1, item.so_luong_toi_da)}
                                             disabled={item.so_luong <= 1}
                                         >
                                             -
@@ -45,7 +45,7 @@ const Cart = () => {
                                         <span>{item.so_luong}</span>
                                         <button
                                             className="quantity-btn"
-                                            onClick={() => updateQuantity(item.ma_san_pham, item.so_luong + 1)}
+                                            onClick={() => updateQuantity(item.ma_san_pham, item.so_luong + 1, item.so_luong_toi_da)}
                                         >
                                             +
                                         </button>

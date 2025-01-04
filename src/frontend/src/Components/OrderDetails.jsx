@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import './OrderDetails.css';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 
 const OrderDetails = () => {
     const [orders, setOrders] = useState([]);
@@ -43,37 +43,67 @@ const OrderDetails = () => {
     }, []);
 
     if (loading) {
-        return <div className="loading-message">Đang tải danh sách đơn hàng...</div>;
+        return <div>Đang tải danh sách đơn hàng...</div>;
     }
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return <div>{error}</div>;
     }
 
     return (
-        <div className="order-list-container">
-            <h2>Danh Sách Đơn Hàng</h2>
+        <TableContainer component={Paper}>
+            <h2 style={{ textAlign: 'center', margin: '20px 0' }}>Danh Sách Đơn Hàng</h2>
             {orders.length === 0 ? (
-                <p>Không có đơn hàng nào.</p>
+                <p style={{ textAlign: 'center' }}>Không có đơn hàng nào.</p>
             ) : (
-                <div className="order-list">
-                    {orders.map((order) => (
-                        <div key={order.ma_don_hang} className="order-item">
-                            <p><strong>Mã đơn hàng:</strong> {order.ma_don_hang}</p>
-                            <p><strong>Ngày tạo:</strong> {new Date(order.ngay_tao).toLocaleString()}</p>
-                            <p><strong>Tổng tiền:</strong> {order.tong_tien.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                            <p><strong>Trạng thái:</strong> {order.trang_thai}</p>
-                            <button
-                                className="view-details-btn"
-                                onClick={() => navigate(`/home/order/${order.ma_don_hang}`)}
-                            >
-                                Xem chi tiết
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><strong>Mã đơn hàng</strong></TableCell>
+                            <TableCell><strong>Tên người dùng</strong></TableCell>
+                            <TableCell><strong>Địa chỉ</strong></TableCell>
+                            <TableCell><strong>Số điện thoại</strong></TableCell>
+                            <TableCell><strong>Ngày tạo</strong></TableCell>
+                            <TableCell><strong>Tổng tiền</strong></TableCell>
+                            <TableCell><strong>Trạng thái</strong></TableCell>
+                            <TableCell><strong>Hành động</strong></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {orders.map((order) => (
+                            <TableRow key={order.ma_don_hang}>
+                                <TableCell>{order.ma_don_hang}</TableCell>
+                                <TableCell>{order.ho_ten || 'Ẩn danh'}</TableCell>
+                                <TableCell>{order.dia_chi_giao_hang}</TableCell>
+                                <TableCell>{order.so_dien_thoai || 'Chưa cập nhật'}</TableCell>
+                                <TableCell>
+                                    {new Date(order.ngay_tao).toLocaleString('vi-VN')}
+                                </TableCell>
+                                <TableCell>
+                                    {Number(order.tong_tien).toLocaleString('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                        minimumFractionDigits: 0, // Không hiển thị số thập phân nếu không cần
+                                    })}
+                                </TableCell>
+
+                                <TableCell>{order.trang_thai}</TableCell>
+                                <TableCell>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="small"
+                                        onClick={() => navigate(`/home/order/${order.ma_don_hang}`)}
+                                    >
+                                        Xem chi tiết
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
             )}
-        </div>
+        </TableContainer>
     );
 };
 

@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet } from 'react-router-dom';
+import Introduction from './Components/Introduction';
 import Register from './Components/Register';
 import Login from './Components/Login';
 import Dashboard from './Components/admin/Dashboard';
@@ -15,6 +16,7 @@ import Footer from './Components/Footer';
 import Cart from './Components/Cart';
 import OrderDetails from './Components/OrderDetails';
 import OrderDetailsPage from './Components/OrderDetailsPage';
+import ManageOrders from './Components/admin/ManageOrders';
 import UserProfile from './Components/UserProfile';
 import CartProvider from './context/CartContext';
 import 'react-toastify/dist/ReactToastify.css';
@@ -35,6 +37,7 @@ function App() {
     <CartProvider>
       <div id="root">
         <Routes>
+          <Route path="/" element={<Introduction />} />
           <Route path="/home" element={<HomeLayout />}>
             <Route index element={<Home />} />
             <Route path="chitietsanpham/:id" element={<ChiTietSanPham />} />
@@ -52,6 +55,7 @@ function App() {
             <Route path="products/edit/:ma_san_pham" element={<EditProduct />} />
             <Route path="manufacturers" element={<Manufacturers />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="manage-orders" element={<ManageOrders />} />
           </Route>
         </Routes>
       </div>

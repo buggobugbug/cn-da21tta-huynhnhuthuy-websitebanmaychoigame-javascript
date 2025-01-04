@@ -4,12 +4,10 @@ export const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState(() => {
-        // Lấy giỏ hàng từ localStorage khi khởi tạo
         return JSON.parse(localStorage.getItem('cart')) || [];
     });
 
     useEffect(() => {
-        // Lưu giỏ hàng vào localStorage mỗi khi cartItems thay đổi
         localStorage.setItem('cart', JSON.stringify(cartItems));
     }, [cartItems]);
 
@@ -29,8 +27,13 @@ const CartProvider = ({ children }) => {
         });
     };
 
-    // Cập nhật số lượng sản phẩm trong giỏ hàng
-    const updateQuantity = (productId, newQuantity) => {
+    // Cập nhật số lượng sản phẩm
+    const updateQuantity = (productId, newQuantity, maxQuantity) => {
+        if (newQuantity > maxQuantity) {
+            alert(`Số lượng còn lại chỉ có ${maxQuantity} sản phẩm.`);
+            return;
+        }
+
         setCartItems((prevItems) =>
             prevItems.map((item) =>
                 item.ma_san_pham === productId

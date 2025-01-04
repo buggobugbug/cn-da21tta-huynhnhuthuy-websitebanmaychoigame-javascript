@@ -27,11 +27,11 @@ const OrderDetailsPage = () => {
                     },
                 });
 
+                const data = await response.json();
                 if (!response.ok) {
-                    throw new Error('Không thể tải chi tiết đơn hàng.');
+                    throw new Error(data.message || 'Không thể tải chi tiết đơn hàng.');
                 }
 
-                const data = await response.json();
                 setOrder(data.order);
                 setProducts(data.products);
             } catch (error) {
@@ -76,10 +76,11 @@ const OrderDetailsPage = () => {
                             />
                             <div className="product-info">
                                 <p className="product-name">{product.ten_san_pham}</p>
-                                <div className="product-details">
-                                    <p>Số lượng: {product.so_luong}</p>
-                                    <p>Thành tiền: {(product.gia * product.so_luong).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                                </div>
+                                <p className="product-details">
+                                    Số lượng: {product.so_luong}
+                                    <br />
+                                    Thành tiền: {(product.gia * product.so_luong).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                </p>
                                 <p className="product-price">{product.gia.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             </div>
                         </div>
@@ -90,7 +91,6 @@ const OrderDetailsPage = () => {
             )}
         </div>
     );
-
 };
 
 export default OrderDetailsPage;

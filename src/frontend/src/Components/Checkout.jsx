@@ -1,7 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import './Checkout.css';
+import {
+    Box,
+    TextField,
+    Button,
+    Typography,
+    Grid,
+    Card,
+    CardContent,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    Divider,
+    Avatar,
+    Alert,
+    Snackbar,
+} from '@mui/material';
 
 const Checkout = () => {
     const navigate = useNavigate();
@@ -11,6 +27,7 @@ const Checkout = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('COD');
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(false);
 
     // Lấy dữ liệu từ localStorage
     useEffect(() => {
@@ -30,8 +47,13 @@ const Checkout = () => {
             return;
         }
 
+        if (!fullName || !address || !phoneNumber) {
+            setError('Vui lòng điền đầy đủ thông tin.');
+            return;
+        }
+
         if (!cartItems.length) {
-            alert('Giỏ hàng trống. Không thể thanh toán.');
+            setError('Giỏ hàng trống. Không thể thanh toán.');
             return;
         }
 
@@ -46,90 +68,147 @@ const Checkout = () => {
                     dia_chi_giao_hang: `${fullName}, ${address}`,
                     phone_number: phoneNumber,
                     payment_method: paymentMethod,
-                    cart_items: cartItems, // Truyền toàn bộ giỏ hàng
-                    tong_tien: calculateTotalPrice(), // Tổng tiền đã tính
+                    cart_items: cartItems,
+                    tong_tien: calculateTotalPrice(),
                 }),
             });
 
+            const data = await response.json();
             if (!response.ok) {
-                throw new Error('Đặt hàng thất bại, vui lòng thử lại.');
+                setError(data.message || 'Đặt hàng thất bại, vui lòng thử lại.');
+                return;
             }
 
-            const data = await response.json();
-            alert('Đặt hàng thành công!');
-            localStorage.removeItem('cart'); // Xóa giỏ hàng sau khi đặt hàng thành công
-            navigate('/home'); // Quay lại trang chủ
+            setSuccessMessage(true);
+            localStorage.removeItem('cart');
+            setTimeout(() => navigate('/home/orders'), 2000);
         } catch (error) {
-            setError(error.message);
+            setError('Không thể kết nối với máy chủ. Vui lòng thử lại.');
         }
     };
 
     return (
-        <div className="checkout-container">
-            <h2>Thông tin thanh toán</h2>
-            {error && <p className="error-message">{error}</p>}
-            <form onSubmit={(e) => e.preventDefault()}>
-                <div className="form-group">
-                    <label htmlFor="fullName">Họ và tên</label>
-                    <input
-                        type="text"
-                        id="fullName"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="address">Địa chỉ giao hàng</label>
-                    <input
-                        type="text"
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="phoneNumber">Số điện thoại</label>
-                    <input
-                        type="text"
-                        id="phoneNumber"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="paymentMethod">Phương thức thanh toán</label>
-                    <select
-                        id="paymentMethod"
-                        value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+        <Box sx={{ p: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Thông tin thanh toán
+            </Typography>
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
+            <Snackbar
+                open={successMessage}
+                autoHideDuration={3000}
+                onClose={() => setSuccessMessage(false)}
+                message="Đặt hàng thành công!"
+            />
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={8}>
+                    <Card>
+                        <CardContent>
+                            <Box component="form" noValidate autoComplete="off">
+                                <TextField
+                                    label="Họ và tên"
+                                    fullWidth
+                                    margin="normal"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    required
+                                />
+                                <TextField
+                                    label="Địa chỉ giao hàng"
+                                    fullWidth
+                                    margin="normal"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    required
+                                />
+                                <TextField
+                                    label="Số điện thoại"
+                                    fullWidth
+                                    margin="normal"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    required
+                                />
+                                <FormControl fullWidth margin="normal">
+                                    <InputLabel>Phương thức thanh toán</InputLabel>
+                                    <Select
+                                        value={paymentMethod}
+                                        onChange={(e) => setPaymentMethod(e.target.value)}
+                                    >
+                                        <MenuItem value="COD">Thanh toán khi nhận hàng</MenuItem>
+                                        <MenuItem value="Online">Thanh toán trực tuyến</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                                Đơn hàng của bạn
+                            </Typography>
+                            <Divider sx={{ mb: 2 }} />
+                            {cartItems.map((item) => (
+                                <Box
+                                    key={item.ma_san_pham}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        mb: 2,
+                                    }}
+                                >
+                                    <Avatar
+                                        src={`http://localhost:5000${item.hinh_anh}`}
+                                        alt={item.ten_san_pham}
+                                        sx={{ width: 48, height: 48, mr: 2 }}
+                                    />
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography variant="body2" noWrap>
+                                            {item.ten_san_pham}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Số lượng: {item.so_luong}
+                                        </Typography>
+                                    </Box>
+                                    <Typography variant="body2">
+                                        {item.gia.toLocaleString('vi-VN', {
+                                            style: 'currency',
+                                            currency: 'VND',
+                                        })}
+                                    </Typography>
+                                </Box>
+                            ))}
+                            <Divider sx={{ my: 2 }} />
+                            <Box sx={{ textAlign: 'right', fontWeight: 'bold' }}>
+                                <Typography>
+                                    Tổng cộng:{' '}
+                                    {calculateTotalPrice().toLocaleString('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                    })}
+                                </Typography>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{ mt: 2 }}
+                        onClick={handleCheckout}
                     >
-                        <option value="COD">Thanh toán khi nhận hàng</option>
-                        <option value="Online">Thanh toán trực tuyến</option>
-                    </select>
-                </div>
-
-                <div className="cart-summary">
-                    <p className="cart-total">
-                        Tổng tiền: {calculateTotalPrice().toLocaleString('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND',
-                        })}
-                    </p>
-                </div>
-
-                <button className="checkout-btn" onClick={handleCheckout}>
-                    Thanh toán
-                </button>
-            </form>
-        </div>
+                        Thanh toán
+                    </Button>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 
 export default Checkout;
-
