@@ -44,6 +44,9 @@ const Dashboard = () => {
                     <li onClick={() => navigate("/dashboard/manage-orders")}>
                         <a href="#">Quản lý đơn hàng</a> {/* Menu mới */}
                     </li>
+                    <li onClick={() => navigate("/dashboard/statistics")}>
+                        <a href="#">Thống kê</a> {/* Menu mới */}
+                    </li>
                     <li onClick={onLogout}>
                         <a href="#">Đăng xuất</a>
                     </li>

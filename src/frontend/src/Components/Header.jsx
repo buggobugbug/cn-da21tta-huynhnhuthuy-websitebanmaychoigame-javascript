@@ -29,16 +29,16 @@ const Header = () => {
     const cartCount = cartItems.reduce((sum, item) => sum + item.so_luong, 0);
 
     const menuItems = [
-        { id: 1, label: 'Nintendo', icon: <SportsEsportsIcon /> },
-        { id: 2, label: 'Playstation', icon: <PlayCircleOutlineIcon /> },
-        { id: 3, label: 'Gaming Gear', icon: <KeyboardIcon /> },
-        { id: 4, label: 'Lifestyle', icon: <BackpackIcon /> },
-        { id: 5, label: 'Trading Card', icon: <CreditCardIcon /> },
-        { id: 6, label: 'Kotobukiya', icon: <AppsIcon /> },
-        { id: 7, label: 'Hobby', icon: <CatchingPokemonIcon /> },
-        { id: 8, label: 'Dụng cụ', icon: <BuildIcon /> },
-        { id: 9, label: 'Dịch vụ', icon: <StarsIcon /> },
-        { id: 10, label: 'Tin tức', icon: <ArticleIcon /> },
+        { id: 1, label: 'Nintendo', icon: <SportsEsportsIcon />, category: 'Nintendo' },
+        { id: 2, label: 'Playstation', icon: <PlayCircleOutlineIcon />, category: 'Playstation' },
+        { id: 3, label: 'Gaming Gear', icon: <KeyboardIcon />, category: 'Gaming Gear' },
+        { id: 4, label: 'Lifestyle', icon: <BackpackIcon />, category: 'Lifestyle' },
+        { id: 5, label: 'Trading Card', icon: <CreditCardIcon />, category: 'Trading Card' },
+        { id: 6, label: 'Kotobukiya', icon: <AppsIcon />, category: 'Kotobukiya' },
+        { id: 7, label: 'Hobby', icon: <CatchingPokemonIcon />, category: 'Hobby' },
+        { id: 8, label: 'Dụng cụ', icon: <BuildIcon />, category: 'Dụng cụ' },
+        { id: 9, label: 'Dịch vụ', icon: <StarsIcon />, category: 'Dịch vụ' },
+        { id: 10, label: 'Tin tức', icon: <ArticleIcon />, category: 'Tin tức' },
     ];
 
     useEffect(() => {
@@ -60,11 +60,14 @@ const Header = () => {
         }
     };
 
-
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
             navigate(`/home?search=${searchQuery}`);
         }
+    };
+
+    const handleCategoryClick = (category) => {
+        navigate(`/home?category=${category}`);
     };
 
     return (
@@ -77,7 +80,12 @@ const Header = () => {
 
             <Box className="header-menu">
                 {menuItems.map((item) => (
-                    <Box key={item.id} className="header-menu-item">
+                    <Box
+                        key={item.id}
+                        className="header-menu-item"
+                        onClick={() => handleCategoryClick(item.category)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         {React.cloneElement(item.icon, { className: 'header-icon' })}
                         <Typography variant="body2" className="header-menu-label">
                             {item.label}

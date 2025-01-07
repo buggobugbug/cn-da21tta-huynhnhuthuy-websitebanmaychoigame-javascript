@@ -18,6 +18,7 @@ import OrderDetails from './Components/OrderDetails';
 import OrderDetailsPage from './Components/OrderDetailsPage';
 import ManageOrders from './Components/admin/ManageOrders';
 import UserProfile from './Components/UserProfile';
+import Statistics from './Components/admin/Statistics'; // Import component mới
 import CartProvider from './context/CartContext';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -45,7 +46,7 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="orders" element={<OrderDetails />} />
             <Route path="order/:orderId" element={<OrderDetailsPage />} />
-            <Route path="user/:ma_nguoi_dung" element={<UserProfile />} /> {/* Đúng cú pháp */}
+            <Route path="user/:ma_nguoi_dung" element={<UserProfile />} />
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
@@ -56,6 +57,7 @@ function App() {
             <Route path="manufacturers" element={<Manufacturers />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="manage-orders" element={<ManageOrders />} />
+            <Route path="statistics" element={<Statistics />} /> {/* Thêm route mới */}
           </Route>
         </Routes>
       </div>

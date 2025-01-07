@@ -1,9 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie'; // Thêm import js-cookie
-import { toast } from 'react-toastify'; // Import react-toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {
+    TextField,
+    Button,
+    Box,
+    Typography,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    Grid,
+} from '@mui/material';
 import './css/addproducts.scss';
 
 const AddProduct = () => {
@@ -13,23 +24,50 @@ const AddProduct = () => {
         gia: '',
         ma_danh_muc: '',
         so_luong: '',
-        hinh_anh: null
+        hinh_anh: null,
     });
+    const [categories, setCategories] = useState([]); // Lưu danh sách danh mục
     const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    // Lấy danh mục từ API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const token = Cookies.get('accessToken');
+                if (!token) {
+                    setError('Bạn cần đăng nhập.');
+                    return;
+                }
+
+                const response = await axios.get('http://localhost:5000/api/categories', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                setCategories(response.data);
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+                setError('Không thể tải danh mục.');
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProduct((prevProduct) => ({
             ...prevProduct,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleFileChange = (e) => {
         setProduct((prevProduct) => ({
             ...prevProduct,
-            hinh_anh: e.target.files[0]
+            hinh_anh: e.target.files[0],
         }));
     };
 
@@ -60,8 +98,8 @@ const AddProduct = () => {
             const response = await axios.post('http://localhost:5000/api/products/add', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
-                }
+                    Authorization: `Bearer ${token}`,
+                },
             });
             if (response.status === 201) {
                 toast.success('Thêm sản phẩm thành công!', {
@@ -78,82 +116,116 @@ const AddProduct = () => {
         }
     };
 
-
     return (
-        <div>
-            <h2>Thêm sản phẩm mới</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit} className="add-product-form">
-                <div className="form-group">
-                    <label>Tên sản phẩm</label>
-                    <input
-                        type="text"
-                        name="ten_san_pham"
-                        value={product.ten_san_pham}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+        <Box sx={{ maxWidth: 600, margin: 'auto', p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: '#fff' }}>
+            <Typography variant="h5" align="center" gutterBottom>
+                Thêm sản phẩm mới
+            </Typography>
+            {error && <Typography color="error" gutterBottom>{error}</Typography>}
+            <form onSubmit={handleSubmit}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Tên sản phẩm"
+                            name="ten_san_pham"
+                            value={product.ten_san_pham}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                        />
+                    </Grid>
 
-                <div className="form-group">
-                    <label>Mô tả sản phẩm</label>
-                    <textarea
-                        name="mo_ta"
-                        value={product.mo_ta}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Mô tả sản phẩm"
+                            name="mo_ta"
+                            value={product.mo_ta}
+                            onChange={handleChange}
+                            required
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                        />
+                    </Grid>
 
-                <div className="form-group">
-                    <label>Giá sản phẩm</label>
-                    <input
-                        type="number"
-                        name="gia"
-                        value={product.gia}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Giá sản phẩm"
+                            name="gia"
+                            type="number"
+                            value={product.gia}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                        />
+                    </Grid>
 
-                <div className="form-group">
-                    <label>Mã danh mục</label>
-                    <input
-                        type="number"
-                        name="ma_danh_muc"
-                        value={product.ma_danh_muc}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth variant="outlined" required>
+                            <InputLabel id="category-label">Danh mục</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                name="ma_danh_muc"
+                                value={product.ma_danh_muc}
+                                onChange={handleChange}
+                                label="Danh mục"
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category.ma_danh_muc} value={category.ma_danh_muc}>
+                                        {category.ten_danh_muc}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                <div className="form-group">
-                    <label>Số lượng</label>
-                    <input
-                        type="number"
-                        name="so_luong"
-                        value={product.so_luong}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            label="Số lượng"
+                            name="so_luong"
+                            type="number"
+                            value={product.so_luong}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                        />
+                    </Grid>
 
-                <div className="form-group">
-                    <label className="file-label" htmlFor="hinh_anh">Chọn hình ảnh</label>
-                    <input
-                        type="file"
-                        id="hinh_anh"
-                        name="hinh_anh"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        required
-                    />
-                    {product.hinh_anh && <div className="file-name">Tệp: {product.hinh_anh.name}</div>}
-                </div>
+                    <Grid item xs={12}>
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            fullWidth
+                        >
+                            Chọn hình ảnh
+                            <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                required
+                            />
+                        </Button>
+                        {product.hinh_anh && <Typography variant="body2" sx={{ mt: 1 }}>Tệp: {product.hinh_anh.name}</Typography>}
+                    </Grid>
 
-                <button type="submit">Thêm sản phẩm</button>
+                    <Grid item xs={12}>
+                        <Button
+                            fullWidth
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                        >
+                            Thêm sản phẩm
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Box>
     );
 };
 

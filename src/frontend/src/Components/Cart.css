@@ -85,7 +85,7 @@
 }
 
 .quantity-btn:hover {
-    background-color: #f35212;
+    background-color: #ff0000;
     color: #fff;
 }
 
@@ -120,7 +120,7 @@
 .cart-total {
     font-size: 20px;
     font-weight: bold;
-    color: #f35212;
+    color: #ff0000;
     margin: 20px 0;
 }
 
@@ -129,16 +129,17 @@
     padding: 15px;
     font-size: 18px;
     font-weight: bold;
-    background-color: #f35212;
-    color: #fff;
-    border: none;
+    background-color: #ffffff;
+    color: #ff0000;
+    border: 1PX SOLID RED;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .checkout-btn:hover {
-    background-color: #e03a0e;
+    background-color: #ff0000;
+    color: #ffffff;
 }
 
 .cart-note {
@@ -177,6 +178,6 @@
 }
 
 .continue-shopping-btn:hover {
-    border-color: #f35212;
-    color: #f35212;
+    border-color: #ff0000;
+    color: #ffffff;
 }

@@ -6,6 +6,7 @@ import productRoutes from './routes/productRoutes.js';
 import ordersRoutes from './routes/ordersRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import statisticsRoutes from './routes/statistics.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
@@ -32,6 +33,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', ordersRoutes);
 app.use('/api', categoryRoutes);
 app.use('/api', userRoutes);
+app.use('/api', statisticsRoutes);
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

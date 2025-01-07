@@ -25,16 +25,19 @@ export const createOrder = async (req, res) => {
 
         // Xử lý từng sản phẩm trong giỏ hàng
         for (const item of cart_items) {
-            // Kiểm tra số lượng sản phẩm
             const [product] = await pool.query(
                 `SELECT so_luong, ten_san_pham FROM SanPham WHERE ma_san_pham = ?`,
                 [item.ma_san_pham]
             );
 
-            if (!product.length || product[0].so_luong < item.so_luong) {
+            if (!product.length) {
+                throw new Error(`Sản phẩm với ID ${item.ma_san_pham} không tồn tại.`);
+            }
+
+            if (product[0].so_luong < item.so_luong) {
                 return res.status(400).json({
                     error: true,
-                    message: `Số lượng sản phẩm "${product[0]?.ten_san_pham}" không đủ. Vui lòng liên hệ chăm sóc khách hàng để được tư vấn thêm`,
+                    message: `Số lượng sản phẩm "${product[0].ten_san_pham}" không đủ. Vui lòng liên hệ chăm sóc khách hàng để được tư vấn thêm.`,
                 });
             }
 
