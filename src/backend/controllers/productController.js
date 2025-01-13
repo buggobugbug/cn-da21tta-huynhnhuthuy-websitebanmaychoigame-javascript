@@ -86,15 +86,19 @@ export const updateProduct = [
         }
 
         const { ma_san_pham } = req.params;
-        const { ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong } = req.body;
-        let hinh_anh = req.body.hinh_anh; // Giữ hình ảnh cũ nếu không có file mới
+        const { ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong, hinh_anh_cu } = req.body;
+
+        // Xác định hình ảnh: giữ ảnh cũ nếu không có file mới
+        let hinh_anh = hinh_anh_cu;
         if (req.file) {
             hinh_anh = `/uploads/${req.file.filename}`;
         }
 
         try {
             const [result] = await pool.query(
-                `UPDATE SanPham SET ten_san_pham = ?, mo_ta = ?, gia = ?, ma_danh_muc = ?, so_luong = ?, hinh_anh = ? WHERE ma_san_pham = ? AND is_deleted = 0`,
+                `UPDATE SanPham 
+                 SET ten_san_pham = ?, mo_ta = ?, gia = ?, ma_danh_muc = ?, so_luong = ?, hinh_anh = ? 
+                 WHERE ma_san_pham = ? AND is_deleted = 0`,
                 [ten_san_pham, mo_ta, gia, ma_danh_muc, so_luong, hinh_anh, ma_san_pham]
             );
 
@@ -109,6 +113,7 @@ export const updateProduct = [
         }
     }
 ];
+
 
 // API Xóa sản phẩm (Soft Delete)
 export const deleteProduct = async (req, res) => {

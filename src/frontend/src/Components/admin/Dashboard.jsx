@@ -26,7 +26,7 @@ const Dashboard = () => {
         <>
             <div className="sidebar">
                 <Link to={`/`} style={{ textDecoration: 'none' }}>
-                    <h2 className="text-white">Dashboard</h2>
+                    <h2 className="text-white">SHOP GAME ADMIN</h2>
                 </Link>
                 <ul>
                     <li onClick={() => navigate("/dashboard/products")}>

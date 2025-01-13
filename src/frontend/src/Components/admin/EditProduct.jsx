@@ -44,28 +44,31 @@ const EditProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const token = Cookies.get('accessToken');
             const formData = new FormData();
-
+    
             formData.append('ten_san_pham', product.ten_san_pham || '');
             formData.append('mo_ta', product.mo_ta || '');
             formData.append('gia', product.gia || '');
             formData.append('ma_danh_muc', product.ma_danh_muc || '');
             formData.append('so_luong', product.so_luong || '');
-
+    
+            // Chỉ thêm ảnh mới nếu người dùng chọn file mới
             if (product.hinh_anh instanceof File) {
                 formData.append('hinh_anh', product.hinh_anh);
+            } else {
+                formData.append('hinh_anh_cu', product.hinh_anh); // Gửi tên ảnh cũ
             }
-
+    
             await axios.put(`http://localhost:5000/api/products/${ma_san_pham}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
+    
             alert('Cập nhật sản phẩm thành công!');
             navigate('/dashboard/all-products');
         } catch (err) {
@@ -73,6 +76,7 @@ const EditProduct = () => {
             setError('Lỗi khi cập nhật sản phẩm.');
         }
     };
+    
 
     return (
         <div className="container mt-5">

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -11,16 +10,20 @@ import {
     Card,
     CardContent,
     Avatar,
+    Alert,
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 
 const Login = () => {
     const [tenDangNhap, setTenDangNhap] = useState("");
     const [matKhau, setMatKhau] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage(""); // Reset error message trước khi gửi request
+
         try {
             const response = await axios.post("http://localhost:5000/api/auth/login", {
                 ten_dang_nhap: tenDangNhap,
@@ -38,14 +41,14 @@ const Login = () => {
                 } else if (user.ma_vai_tro === 2) {
                     navigate("/home");
                 } else {
-                    toast.error("Không xác định quyền người dùng");
+                    setErrorMessage("Không xác định quyền người dùng");
                 }
             } else {
-                toast.error("Đăng nhập thất bại!");
+                setErrorMessage("Tên đăng nhập hoặc mật khẩu không đúng!");
             }
         } catch (error) {
             console.error(error);
-            toast.error("Có lỗi xảy ra!");
+            setErrorMessage("Tên đăng nhập hoặc mật khẩu của bạn không đúng");
         }
     };
 
@@ -67,6 +70,12 @@ const Login = () => {
                     <Typography variant="h5" align="center" gutterBottom>
                         Đăng Nhập
                     </Typography>
+
+                    {errorMessage && (
+                        <Alert severity="error" sx={{ mb: 2 }}>
+                            {errorMessage}
+                        </Alert>
+                    )}
 
                     <form onSubmit={handleSubmit}>
                         <TextField
@@ -101,7 +110,7 @@ const Login = () => {
                     </form>
 
                     <Typography variant="body2" align="center">
-                        Bạn chưa có tài khoản?{' '}
+                        Bạn chưa có tài khoản?{" "}
                         <Link to="/register" style={{ textDecoration: "none", color: "#1976d2" }}>
                             Đăng ký
                         </Link>

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import {
@@ -10,7 +9,11 @@ import {
     Card,
     CardContent,
     Avatar,
+    Alert,
+    Collapse,
+    IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const Register = () => {
@@ -18,6 +21,7 @@ const Register = () => {
     const [soDienThoai, setSoDienThoai] = useState("");
     const [diaChi, setDiaChi] = useState("");
     const [matKhau, setMatKhau] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -31,32 +35,13 @@ const Register = () => {
             });
 
             if (response.data.message) {
-                toast.success(response.data.message, {
-                    style: {
-                        backgroundColor: "#4CAF50",
-                        color: "#fff",
-                    },
-                    autoClose: 3000,
-                });
                 navigate("/login");
             } else {
-                toast.error("Đăng ký thất bại!", {
-                    style: {
-                        backgroundColor: "#F44336",
-                        color: "#fff",
-                    },
-                    autoClose: 3000,
-                });
+                setErrorMessage("Đăng ký thất bại!");
             }
         } catch (error) {
             console.error(error);
-            toast.error("Có lỗi xảy ra!", {
-                style: {
-                    backgroundColor: "#F44336",
-                    color: "#fff",
-                },
-                autoClose: 3000,
-            });
+            setErrorMessage("Tên đăng nhập đã tồn tại, mời bạn nhập tên đăng nhập khác");
         }
     };
 
@@ -78,6 +63,25 @@ const Register = () => {
                     <Typography variant="h5" align="center" gutterBottom>
                         Đăng Ký
                     </Typography>
+
+                    {/* Hiển thị thông báo lỗi */}
+                    <Collapse in={!!errorMessage}>
+                        <Alert
+                            severity="error"
+                            sx={{ mb: 2 }}
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    size="small"
+                                    onClick={() => setErrorMessage("")}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                            }
+                        >
+                            {errorMessage}
+                        </Alert>
+                    </Collapse>
 
                     <form onSubmit={handleSubmit}>
                         <TextField

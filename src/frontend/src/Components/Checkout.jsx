@@ -37,7 +37,7 @@ const Checkout = () => {
 
     // Tính tổng tiền
     const calculateTotalPrice = () => {
-        return cartItems.reduce((total, item) => total + item.gia * item.so_luong, 0);
+        return cartItems.reduce((total, item) => total + item.gia * item.so_luong + 30000, 0);
     };
 
     const handleCheckout = async () => {
@@ -150,7 +150,7 @@ const Checkout = () => {
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
-                                Đơn hàng của bạn
+                                Đơn hàng của bạn + phí ship 30.000vnd
                             </Typography>
                             <Divider sx={{ mb: 2 }} />
                             {cartItems.map((item) => (

@@ -27,7 +27,7 @@ const OrderDetails = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Không thể tải danh sách đơn hàng.');
+                    throw new Error('Danh sách đơn hàng trống');
                 }
 
                 const data = await response.json();
