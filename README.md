@@ -1,5 +1,5 @@
-# Hướng Dẫn Cài Đặt Môi Trường & Khởi Chạy Dự Án Website Bán Máy Chơi Game
-
+# Hướng Dẫn Cài Đặt Môi Trường & Khởi Chạy Dự Án Website Bán Máy Chơi Game với csdl xampp (dễ hơn sp với mgdb và sử dụng docker)
+Chạy ứng dụng bạn chỉ cần pull code (giải nén tệp zip) sau đó cài đặt tất cả các ứng dụng cần thiết, truy cập vào từng thư mục (BE, FE) sau đó chạy lệnh npm i, sau khi cài xong, bạn chạy lệnh npm start cho BE và cả FE, ứng dụng sẽ hoạt động (csdl trong xampp phải import vào nhé). Thắc mắc gmail: pinsherlock1412@gmail.com 
 ## 1. Cài Đặt Môi Trường
 
 ### 1.1 Cài Đặt Node.js
